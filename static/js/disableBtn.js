@@ -1,6 +1,6 @@
-$(document).ready(function() {
+$(document).ready(function () {
   $('#submitBtn').prop('disabled', true);
-  $('#ciphInput').keyup(function() {
+  $('#ciphInput').keyup(function () {
     $('#submitBtn').prop('disabled', this.value == "" ? true : false);
   })
 });

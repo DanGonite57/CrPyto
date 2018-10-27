@@ -1,6 +1,6 @@
 import string
-import sys
-from Processing import PatternList, PatternGen, DetectEnglish
+
+from Processing import DetectEnglish, PatternGen, PatternList
 
 
 def decrypt(ciph):

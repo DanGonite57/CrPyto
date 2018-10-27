@@ -1,5 +1,3 @@
-import string
-
 with open("rawWords.txt") as f:
     words = f.read()
 
@@ -22,21 +20,21 @@ for x in tmp:
 f.close()
 
 
-#import PatternGen
-#
-#patterns = {}
-#
-#with open("D:\Programming\RandPy\Codebreaking No. 3\Ciphers\WordList.txt") as f:
+# import PatternGen
+
+# patterns = {}
+
+# with open("D:\Programming\RandPy\Codebreaking No. 3\Ciphers\WordList.txt") as f:
 #    words = f.readlines()
-#
-#for word in words:
+
+# for word in words:
 #    word = word[:-1]
 #    try:
 #        patterns[PatternGen.pattern(word)].append(word)
 #    except KeyError:
 #        patterns[PatternGen.pattern(word)] = []
 #        patterns[PatternGen.pattern(word)].append(word)
-#
-#f = open("D:\Programming\RandPy\Codebreaking No. 3\Ciphers\PatternList.py", "w")
-#f.write(str(patterns))
-#f.close()
+
+# f = open("D:\Programming\RandPy\Codebreaking No. 3\Ciphers\PatternList.py", "w")
+# f.write(str(patterns))
+# f.close()

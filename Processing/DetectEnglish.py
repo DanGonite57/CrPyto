@@ -1,5 +1,5 @@
-with open(".\Processing\WordList.txt", "r") as f:
-        wordset = set(f.read().split())
+with open(".\\Processing\\WordList.txt", "r") as f:
+    wordset = set(f.read().split())
 
 # TODO: Move wordlist to static
 
@@ -13,6 +13,7 @@ def detect(text):
             total += 1
     score = total / len(text)
     return score
+
 
 def getLongest():
     return max(map(len, wordset))

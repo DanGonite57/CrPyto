@@ -1,11 +1,8 @@
 import os
-import sys
-from flask import (Flask,
-                   render_template,
-                   redirect,
-                   url_for,
-                   request,
-                   send_from_directory)
+
+from flask import (Flask, redirect, render_template, request,
+                   send_from_directory, url_for)
+
 from Processing import Decrypt
 
 # create the application object
