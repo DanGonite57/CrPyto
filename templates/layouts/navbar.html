@@ -1,0 +1,17 @@
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="/">{{ title }}</a>
+  <div class="dropdown-container ml-auto mr-2">
+    <button class="btn btn-secondary dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ciphers</button>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+      <a class="dropdown-item" href="caesar.html">Caesar</a>
+      <a class="dropdown-item" href="substitution.html">Substitution</a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="all.html">View All</a>
+    </div>
+  </div>
+  <form class="form-inline my-2 my-lg-0">
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+  </form>
+</nav>
