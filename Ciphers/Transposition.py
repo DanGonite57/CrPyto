@@ -1,6 +1,9 @@
 import itertools
 import math
 
+from Formatting import SpaceAdd
+from Processing import DetectEnglish
+
 
 def decrypt(ciph):
     length = len(ciph)
@@ -25,15 +28,24 @@ def decrypt(ciph):
             poss[j] = [text[k[x]] for x in range(len(text))]
 
         newText = ""
-        for cols in poss:
-            print(cols)
-            for j in range(i):
-                print(j)
-                for k in range(len(cols[j])):
-                    print(cols[j][k])
+        results = []
+        for perm in poss:
+            for j in range(len(perm[0])):
+                for col in perm:
                     try:
-                        newText += cols[j][k]
+                        newText += col[j]
                     except IndexError:
                         break
-            print(newText)
-            return "", 0
+            results.append(newText)
+            newText = ""
+
+        best = ""
+        bestScore = 0
+        for result in results:
+            result = SpaceAdd.add(result)
+            score = DetectEnglish.detect(result)
+            if score > bestScore:
+                bestScore = score
+                best = str(result)
+
+        return best, bestScore

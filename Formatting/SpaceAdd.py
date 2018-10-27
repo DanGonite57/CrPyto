@@ -1,79 +1,46 @@
 from Processing import DetectEnglish
 
-import sys
 
-maxWord = DetectEnglish.getLongest()
-
-# def add(text, words):
-#     i = 0
-#     while i < len(text):
-#         if DetectEnglish.detect(text[:-i]) == 1:
-#             words.append(text[:-i])
-#             text = text.replace(text[:-i], "", 1)
-#             i = 0
-#         i += 1
-#     if len(text) != 0:
-#         words.append(text[0])
-#         text = text.replace(text[0], "")
-#         add(text, words)
-#     return ' '.join(words)
-
-# def add(text, words):
-#     i = 0
-#     while i < len(text):
-#         if DetectEnglish.detect(text[i::]) == 1:
-#             print(text[i::])
-#             words.append(text[i::])
-#             text = text.replace(text[i::], "", 1)
-#             i = 0
-#         i += 1
-#     if len(text) != 0:
-#         words.append(text[-1])
-#         text = text.replace(text[-1], "")
-#         add(text, words)
-#     return ' '.join(words)
-
-
-def add(text, maxWord, words, poss):
+def process(text, maxWord, words, poss):
     l = len(text)
     maxLen = 0
     bestWord = ""
+    word = ""
     for x in range(l):
         for y in range(x + maxWord, x, -1):
-            word = text[x:y]
-            if DetectEnglish.detect(word) == 1:
-                if len(word) > maxLen:
-                    maxLen = len(word)
-                    bestWord = str(word)
-                break
+            if "." not in text[x:y]:
+                word = text[x:y]
+                if DetectEnglish.detect(word) == 1:
+                    if len(word) > maxLen:
+                        maxLen = len(word)
+                        bestWord = str(word)
+                    break
 
     words[text.index(bestWord)] += bestWord
-    text = text[:text.index(bestWord)] + "." * len(bestWord) + text[text.index(bestWord) + len(bestWord)::]
+    text = (
+        text[: text.index(bestWord)]
+        + "." * len(bestWord)
+        + text[text.index(bestWord) + len(bestWord)::]
+    )
 
-    maxWord = int(maxLen)
-
-    print(set(text))
-
-
-    try:
-        if maxLen == 0:
-            print("Hi", word)
-            words[text.index(word)] += word
-            text = text[:text.index(word)] + "." * len(word) + text[text.index(word) + len(word)::]
-    except UnboundLocalError:
-        sys.exit()
+    if maxLen == 0:
+        words[text.index(word)] += word
+        text = (
+            text[: text.index(word)]
+            + "." * len(word)
+            + text[text.index(word) + len(word)::]
+        )
+        maxLen = 1
 
     if set(text) == {"."}:
-        print("HI")
-        print(words)
-        st = ' '.join(words)
-        print(st)
-        print(st.split())
-        return (' '.join(st))
+        st = " ".join(words)
+        return " ".join(st.split())
 
-    add(text, maxWord, words, poss)
+    process(text, maxLen, words, poss)
 
-    print("HIT")
-    print(words)
-    st = ' '.join(words)
-    return (' '.join(st.split()))
+    st = " ".join(words)
+    return " ".join(st.split())
+
+
+def add(text):
+    return process(text, DetectEnglish.getLongest(), [""] * len(text), [])
