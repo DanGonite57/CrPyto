@@ -1,11 +1,21 @@
+from Processing import Quadgrams
+
 with open(".\\Processing\\WordList.txt", "r") as f:
     wordset = set(f.read().split())
+quads = Quadgrams.quads()
 
 # TODO: Move wordlist to static
 
 
 def detect(text):
-    text = text.split(" ")
+    score = 0
+    for i in range(len(text)):
+        score += quads.get(text[i: i + 4].upper(), 0)
+    return score / len(text)
+
+
+def detectWord(text):
+    text = text.lower().split(" ")
 
     total = 0
     for word in text:
