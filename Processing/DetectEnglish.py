@@ -1,3 +1,5 @@
+import string
+
 from Processing import Quadgrams
 
 with open(".\\static\\WordList.txt", "r") as f:
@@ -14,12 +16,34 @@ def detect(text):
 
 def detectWord(text):
     text = text.lower().split(" ")
-
     total = 0
     for word in text:
         if word in wordset:
             total += 1
     score = total / len(text)
+    return score
+
+
+def freqMatch(text):
+    seq = "etaoinshrdlcumwfgypbvkjxqz"
+    counts = {}
+    for x in string.ascii_lowercase:
+        counts[x] = 0
+    for x in text:
+        try:
+            counts[x] += 1
+        except KeyError:
+            pass
+    testseq = ''.join([x[0] for x in sorted(counts.items(), key=lambda kv: kv[1], reverse=True)])
+    score = 0
+    for x in testseq[:6]:
+        print(x)
+        if x in seq[:6]:
+            score += 1
+    for x in testseq[-6::]:
+        print(x)
+        if x in seq[-6::]:
+            score += 1
     return score
 
 
