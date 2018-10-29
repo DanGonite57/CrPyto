@@ -1,10 +1,8 @@
 from Processing import Quadgrams
 
-with open(".\\Processing\\WordList.txt", "r") as f:
+with open(".\\static\\WordList.txt", "r") as f:
     wordset = set(f.read().split())
 quads = Quadgrams.quads()
-
-# TODO: Move wordlist to static
 
 
 def detect(text):
