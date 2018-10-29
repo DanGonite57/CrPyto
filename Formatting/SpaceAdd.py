@@ -1,16 +1,16 @@
 from Processing import DetectEnglish
 
 
-def process(text, maxWord, words, poss):
-    l = len(text)
+def __process(text, maxWord, words, poss):
+    textLen = len(text)
     maxLen = 0
     bestWord = ""
     word = ""
-    for x in range(l):
+    for x in range(textLen):
         for y in range(x + maxWord, x, -1):
             if "." not in text[x:y]:
                 word = text[x:y]
-                if DetectEnglish.detect(word) == 1:
+                if DetectEnglish.detectWord(word) == 1:
                     if len(word) > maxLen:
                         maxLen = len(word)
                         bestWord = str(word)
@@ -36,11 +36,11 @@ def process(text, maxWord, words, poss):
         st = " ".join(words)
         return " ".join(st.split())
 
-    process(text, maxLen, words, poss)
+    __process(text, maxLen, words, poss)
 
     st = " ".join(words)
     return " ".join(st.split())
 
 
 def add(text):
-    return process(text, DetectEnglish.getLongest(), [""] * len(text), [])
+    return __process(text, DetectEnglish.getLongest(), [""] * len(text), [])

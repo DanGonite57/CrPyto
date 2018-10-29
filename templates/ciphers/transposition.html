@@ -12,6 +12,9 @@
     <div class="form-group">
       <textarea class="form-control" id="ciphInput" name="ciphInput" oninput="expandTextarea(this)" placeholder="Cipher Text">{{ciph}}</textarea>
     </div>
+    <div class="float-right">
+      <input class="form-control" name="keylenInput" placeholder="Key Length" value={{keylen}}>
+    </div>
   </div>
 </div>
 {% endblock %}

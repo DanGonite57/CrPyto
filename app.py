@@ -3,7 +3,7 @@ import os
 from flask import (Flask, redirect, render_template, request,
                    send_from_directory, url_for)
 
-from Processing import Decrypt
+from Processing import Decrypt, DetectEnglish
 
 # create the application object
 app = Flask(__name__)
@@ -27,11 +27,26 @@ def index():
 
 @app.route("/<cipher>.html", methods=["GET", "POST"])
 def ciphers(cipher):
+    ciph = result = ""
+    score = 0
     if request.method == "POST":
         ciph = request.form["ciphInput"]
-        result, score = Decrypt.decrypt(ciph, cipher)
-        return render_template(f"ciphers/{cipher}.html", title=cipher.capitalize(), ciph=ciph, result=result, score=score)
-    return render_template(f"ciphers/{cipher}.html", title=cipher.capitalize(), ciph="", result="", score=0)
+        result, _ = Decrypt.decrypt(ciph, cipher)
+        score = DetectEnglish.detectWord(result)
+    return render_template(f"ciphers/{cipher}.html", title=cipher.capitalize(), ciph=ciph, result=result, score=score)
+
+
+@app.route("/transposition.html", methods=["GET", "POST"])
+def transposition():
+    from Ciphers import Transposition
+    ciph = result = keylen = ""
+    score = 0
+    if request.method == "POST":
+        ciph = request.form["ciphInput"]
+        keylen = request.form["keylenInput"]
+        result, _ = Transposition.decrypt(ciph, int(keylen))
+        score = DetectEnglish.detectWord(result)
+    return render_template(f"ciphers/transposition.html", title="Transposition", ciph=ciph, result=result, score=score, keylen=keylen)
 
 
 @app.errorhandler(404)
@@ -42,5 +57,5 @@ def exception(e):
 
 # start the server with the 'run()' method
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
     # app.run()
