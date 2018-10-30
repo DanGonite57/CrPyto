@@ -3,7 +3,8 @@ import importlib
 imports = [
     "Caesar",
     "Substitution",
-    "Transposition"
+    "Transposition",
+    "Vigenere"
 ]
 
 for each in imports:
