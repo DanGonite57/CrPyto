@@ -1,4 +1,4 @@
-import string
+import collections
 
 from Processing import Quadgrams
 
@@ -26,25 +26,9 @@ def detectWord(text):
 
 def freqMatch(text):
     seq = "etaoinshrdlcumwfgypbvkjxqz"
-    counts = {}
-    for x in string.ascii_lowercase:
-        counts[x] = 0
-    for x in text:
-        try:
-            counts[x] += 1
-        except KeyError:
-            pass
-    testseq = ''.join([x[0] for x in sorted(counts.items(), key=lambda kv: kv[1], reverse=True)])
-    score = 0
-    for x in testseq[:6]:
-        print(x)
-        if x in seq[:6]:
-            score += 1
-    for x in testseq[-6::]:
-        print(x)
-        if x in seq[-6::]:
-            score += 1
-    return score
+    check = collections.Counter(text).most_common()
+    merge = [x[0] for x in check[:6] if x[0] in seq[:6]] + [x[0] for x in check[-6::] if x[0] in seq[-6::]]
+    return len(merge)
 
 
 def getLongest():
