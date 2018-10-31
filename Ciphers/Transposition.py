@@ -1,51 +1,44 @@
 import itertools
 import math
 
-from Formatting import SpaceAdd
 from Processing import DetectEnglish
 
 
-def decrypt(ciph, keylen):
-    best = ""
-    bestScore = 0
-    # for keylen in range(1, len(ciph)):
+def decrypt(ciph, keylen):  # TODO: Add auto functionality (ie keylen n/a)
 
-    temp = str(ciph)
+    # Splice ciph into keylens
     rows = []
+    for i in range(0, len(ciph), keylen):
+        rows.append(ciph[i: i + keylen])
+
+    # Transpose ciph
     text = [""] * keylen
-    while True:
-        rows.append([x for x in temp[:keylen]])
-        temp = temp.replace(temp[:keylen], "", 1)
-        if temp == "":
-            break
-    for j in range(keylen):
-        for k in range(len(rows)):
+    for i in range(keylen):
+        for row in rows:
             try:
-                text[j] += rows[k][j]
+                text[i] += row[i]
             except IndexError:
                 break
 
+    # Shuffles transposed columns
     poss = [[]] * math.factorial(keylen)
-    for j, k in enumerate(itertools.permutations(range(len(text)))):
-        poss[j] = [text[k[x]] for x in range(len(text))]
+    for i, n in enumerate(itertools.permutations(range(len(text)))):
+        poss[i] = [text[n[x]] for x in range(len(text))]
 
+    # Recreates text with shuffle columns
     results = []
     for perm in poss:
         results.append(''.join(mergeLists(perm)))
 
-    for result in results:
-        result = SpaceAdd.add(result)
-        score = DetectEnglish.detect(result)
-        if score > bestScore:
-            bestScore = score
-            best = str(result)
+    # Find most accurate result
+    result, score = DetectEnglish.getBest(results)
 
-    return best, bestScore
+    return result, score
 
 
 def mergeLists(lists):
     """Merge multiple lists in an alternating fashion."""
     result = [''] * (sum(map(len, lists)))
-    for index, splice in enumerate(lists):
-        result[index::len(lists)] = splice
+    for i, splice in enumerate(lists):
+        result[i::len(lists)] = splice
     return result

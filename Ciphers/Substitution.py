@@ -2,22 +2,23 @@ import string
 
 from Processing import DetectEnglish, PatternGen, PatternList
 
+ALPH = string.ascii_lowercase
+
 
 def decrypt(ciph):
-    alph = string.ascii_lowercase
     patterns = PatternList.patterns()
 
     # Initiates keyMap
     keyMap = {}
-    for letter in alph:
-        keyMap[letter] = [x for x in alph]
+    for letter in ALPH:
+        keyMap[letter] = [x for x in ALPH]
 
     # Reformats text into list
     for cw in ciph.split(" "):
 
         # Initiates newMap
         newMap = {}
-        for letter in alph:
+        for letter in ALPH:
             newMap[letter] = set()
 
         # Matches pattern to wordlist

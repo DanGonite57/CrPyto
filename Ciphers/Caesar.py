@@ -2,24 +2,21 @@ import string
 
 from Processing import DetectEnglish
 
+ALPH = string.ascii_lowercase
+
 
 def decrypt(ciph):
-    a = b = str(string.ascii_lowercase)
-    plain = result = list()
+    results = []
 
     for i in range(26):
-        plain = []
-        for j in ciph.lower():
+        result = ""
+        shift = ALPH[i::] + ALPH[:i]
+        for letter in ciph.lower():
             try:
-                plain.append(b[a.index(j)])
+                result += shift[ALPH.index(letter)]
             except ValueError:
-                plain.append(j)
-        b = b[1::] + b[0]
-        result.append(''.join(plain))
+                result += letter
+        results.append(result)
+    result, score = DetectEnglish.getBest(results)
 
-    best = [0, ""]
-    for poss in result:
-        score = DetectEnglish.detect(poss)
-        if score > best[0]:
-            best = [score, poss]
-    return best[1], best[0]
+    return result, score

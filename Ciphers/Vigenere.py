@@ -1,8 +1,10 @@
 import collections
-import itertools
 import string
 
+from Ciphers.Transposition import mergeLists
 from Processing import DetectEnglish
+
+ALPH = string.ascii_lowercase
 
 
 def decrypt(ciph):
@@ -10,67 +12,52 @@ def decrypt(ciph):
 
     # Find repeats
     sub = {}
-    for i in range(3, len(ciph)):
-        for j in range(len(ciph) - i):
+    for subLength in range(len(ciph)):  # May need to switch back to range(3, len(ciph))
+        for i in range(len(ciph) - subLength + 1):
             try:
-                sub[ciph[j: j + i]].append(j)
+                sub[ciph[i: i + subLength]].append(i)
             except KeyError:
-                sub[ciph[j: j + i]] = [j]
+                sub[ciph[i: i + subLength]] = [i]
 
     # Remove non-dupes
-    temp = dict(sub)
-    for x in sub:
-        if len(sub[x]) == 1:
-            temp.pop(x)
-    sub = temp
+    sub = {key: sub[key] for key in sub if len(sub[key]) != 1}
 
-    print(sub)
-    # return
-
-    # Get keylens
+    # Get possible key lengths
     keylens = []
-    for x in sub:
-        for i in range(len(sub[x]) - 1):
-            keylens.append(sub[x][i + 1] - sub[x][i])
+    for key in sub:
+        for i in range(len(sub[key]) - 1):
+            keylens.append(sub[key][i + 1] - sub[key][i])
 
-    # Get keylen factors
+    # Get keylength factors
     factors = []
     for i in keylens:
         factors += [j for j in range(2, i + 1) if i % j == 0]
-
     factors = [x[0] for x in collections.Counter(factors).most_common() if x[1] == collections.Counter(factors).most_common(1)[0][1]]
-    print(factors)
 
     # Get substrings
-    # TODO: Use this block in transposition columnising
-    best = ""
-    bestScore = 0
-    for i in factors:  # TODO: Change back to factors
+    allResults = []
+    for n in factors:
         substrings = []
         keycombos = []
-        posssubs = {}
-        for j in range(i):
-            substring = ''.join([ciph[x] for x in range(j, len(ciph), i)])
+        newsubs = {}
+        for i in range(n):
+            substring = ''.join([ciph[x] for x in range(i, len(ciph), n)])
             substrings.append(substring)
-            print(substring)
 
-            a = b = string.ascii_lowercase
-            posssubs[j] = {}
+            # Get substring-english similarity
+            newsubs[i] = {}
             poss = []
-            for k in range(26):
+            for j in range(26):
                 new = ""
+                shift = ALPH[-j::] + ALPH[:-j]
                 for l in substring:
-                    new += (b[a.index(l)])
-                print(new, DetectEnglish.freqMatch((''.join(new)))) # TODO: Switch back to freqMatch IC no work
-                # return
-                poss.append((a[k], DetectEnglish.freqMatch(''.join(new))))
-                b = b[-1] + b[:-1]
-                posssubs[j][a[k]] = new
+                    new += (shift[ALPH.index(l)])
+                poss.append((ALPH[j], DetectEnglish.freqMatch(''.join(new))))
+                newsubs[i][ALPH[j]] = new
 
-
-            bestFreq = 1
+            # Get most likely substring(s)
+            bestFreq = 0
             keys = []
-            print(poss)
             for x in poss:
                 if x[1] > bestFreq:
                     bestFreq = x[1]
@@ -80,33 +67,26 @@ def decrypt(ciph):
                     keys.append(x[0])
             keycombos.append(keys)
 
-        print(posssubs)
-        
-        print(keycombos)
-        
+        # Create combinations
         combos = []
         comboGen(keycombos, combos, 0, [[]] * len(keycombos))
-        print(combos)
 
+        # Merge keystrings
         results = []
-
         for combo in combos:
-            result = [[]] * len(ciph)
-            for j, x in enumerate(combo):
-                result[j::i] = posssubs[j][x]
-            results.append(''.join(result))
-        
-        for result in results:
-            score = DetectEnglish.detect(result)
-            if score > bestScore:
-                bestScore = score
-                best = result
-    return result, score
+            results.append(''.join(mergeLists([newsubs[j][x] for j, x in enumerate(combo)])))
 
-    # return result, score
+        # Test result for englishness
+        result, score = DetectEnglish.getBest(results)
+        allResults.append(result)
+
+    results, score = DetectEnglish.getBest(allResults)
+
+    return result, score
 
 
 def comboGen(groups, combos, i, result):
+    """Create all possible combinations of a limited set"""
     try:
         for letter in groups[i]:
             result[i] = letter
