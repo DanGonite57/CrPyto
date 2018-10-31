@@ -31,10 +31,7 @@ def decrypt(ciph, keylen):
 
     results = []
     for perm in poss:
-        result = [''] * len(ciph)
-        for j, x in enumerate(perm):
-            result[j::keylen] = x
-        results.append(''.join(result))
+        results.append(''.join(mergeLists(perm)))
 
     for result in results:
         result = SpaceAdd.add(result)
@@ -44,3 +41,11 @@ def decrypt(ciph, keylen):
             best = str(result)
 
     return best, bestScore
+
+
+def mergeLists(lists):
+    """Merge multiple lists in an alternating fashion."""
+    result = [''] * (sum(map(len, lists)))
+    for index, splice in enumerate(lists):
+        result[index::len(lists)] = splice
+    return result
