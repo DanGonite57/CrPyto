@@ -10,9 +10,6 @@ def decrypt(ciph, keylen):
     bestScore = 0
     # for keylen in range(1, len(ciph)):
 
-    print(1)
-    print(ciph)
-
     temp = str(ciph)
     rows = []
     text = [""] * keylen
@@ -28,15 +25,9 @@ def decrypt(ciph, keylen):
             except IndexError:
                 break
 
-    print(2)
-    print(text)
-
     poss = [[]] * math.factorial(keylen)
     for j, k in enumerate(itertools.permutations(range(len(text)))):
         poss[j] = [text[k[x]] for x in range(len(text))]
-
-    print(3)
-    print(len(poss))
 
     newText = ""
     results = []
@@ -50,19 +41,11 @@ def decrypt(ciph, keylen):
         results.append(newText)
         newText = ""
 
-    print(4)
-
     for result in results:
-        print(10)
-        print(result)
         result = SpaceAdd.add(result)
         score = DetectEnglish.detect(result)
-        print(result, score)
         if score > bestScore:
             bestScore = score
             best = str(result)
-
-    print(5)
-    print(best)
 
     return best, bestScore
