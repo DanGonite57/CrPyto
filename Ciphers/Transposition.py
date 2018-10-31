@@ -29,17 +29,12 @@ def decrypt(ciph, keylen):
     for j, k in enumerate(itertools.permutations(range(len(text)))):
         poss[j] = [text[k[x]] for x in range(len(text))]
 
-    newText = ""
     results = []
     for perm in poss:
-        for j in range(len(perm[0])):
-            for col in perm:
-                try:
-                    newText += col[j]
-                except IndexError:
-                    break
-        results.append(newText)
-        newText = ""
+        result = [''] * len(ciph)
+        for j, x in enumerate(perm):
+            result[j::keylen] = x
+        results.append(''.join(result))
 
     for result in results:
         result = SpaceAdd.add(result)
