@@ -1,4 +1,5 @@
 import collections
+import string
 
 from Processing import Quadgrams
 
@@ -26,9 +27,17 @@ def detectWord(text):
 
 def freqMatch(text):
     seq = "etaoinshrdlcumwfgypbvkjxqz"
-    check = collections.Counter(text).most_common()
+    check = collections.Counter(text + seq[::-1]).most_common()  # To ensure that all letters are present
+    # print(check)
     merge = [x[0] for x in check[:6] if x[0] in seq[:6]] + [x[0] for x in check[-6::] if x[0] in seq[-6::]]
+    # print(merge)
     return len(merge)
+
+
+def indexOfCoincidence(text):
+    count = collections.Counter(text).most_common()
+    ic = sum([(x[1] * (x[1] - 1)) / (len(text) * (len(text) - 1)) for x in count])
+    return ic
 
 
 def getLongest():

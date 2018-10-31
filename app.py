@@ -32,7 +32,7 @@ def ciphers(cipher):
     if request.method == "POST":
         ciph = request.form["ciphInput"]
         result, _ = Decrypt.decrypt(ciph, cipher)
-        score = DetectEnglish.detectWord(result)
+        score = DetectEnglish.detectWord(result)  # TODO: Move getScore to indiv ciphers
     return render_template(f"ciphers/{cipher}.html", title=cipher.capitalize(), ciph=ciph, result=result, score=score)
 
 

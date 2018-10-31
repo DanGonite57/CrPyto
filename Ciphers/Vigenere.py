@@ -40,28 +40,35 @@ def decrypt(ciph):
 
     factors = [x[0] for x in collections.Counter(factors).most_common() if x[1] == collections.Counter(factors).most_common(1)[0][1]]
     print(factors)
-    return
 
     # Get substrings
     # TODO: Use this block in transposition columnising
-    for i in [factors[1]]:  # TODO: Change back to factors
+    best = ""
+    bestScore = 0
+    for i in factors:  # TODO: Change back to factors
         substrings = []
         keycombos = []
+        posssubs = {}
         for j in range(i):
-            substring = ''.join([ciph[x] for x in range(j, len(ciph), 3)])
+            substring = ''.join([ciph[x] for x in range(j, len(ciph), i)])
             substrings.append(substring)
             print(substring)
 
             a = b = string.ascii_lowercase
+            posssubs[j] = {}
             poss = []
             for k in range(26):
                 new = ""
                 for l in substring:
                     new += (b[a.index(l)])
+                print(new, DetectEnglish.freqMatch((''.join(new)))) # TODO: Switch back to freqMatch IC no work
+                # return
                 poss.append((a[k], DetectEnglish.freqMatch(''.join(new))))
-                b = b[1::] + b[0]
+                b = b[-1] + b[:-1]
+                posssubs[j][a[k]] = new
 
-            bestFreq = 0
+
+            bestFreq = 1
             keys = []
             print(poss)
             for x in poss:
@@ -71,24 +78,30 @@ def decrypt(ciph):
                     keys.append(x[0])
                 elif x[1] == bestFreq:
                     keys.append(x[0])
-                print(keys)
             keycombos.append(keys)
+
+        print(posssubs)
+        
+        print(keycombos)
         
         combos = []
         comboGen(keycombos, combos, 0, [[]] * len(keycombos))
         print(combos)
 
-        alph = string.ascii_lowercase  # TODO: Move to top and remove b, also for caesar
-        # Decrypt using keys
-        for combo in combos:
-            result = ""
-            for i, letter in enumerate(ciph):
-                shift = alph.index(combo[i % 3])
-                b = alph[shift::] + alph[:shift]
-                result += b[a.index(letter)]
-                print(shift, b, letter, result)
-                return
+        results = []
 
+        for combo in combos:
+            result = [[]] * len(ciph)
+            for j, x in enumerate(combo):
+                result[j::i] = posssubs[j][x]
+            results.append(''.join(result))
+        
+        for result in results:
+            score = DetectEnglish.detect(result)
+            if score > bestScore:
+                bestScore = score
+                best = result
+    return result, score
 
     # return result, score
 
