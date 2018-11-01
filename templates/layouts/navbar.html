@@ -1,3 +1,5 @@
+{% set ciphers = ["Caesar", "Substitution","Transposition", "Vigenere"] %}
+
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <a class="navbar-brand" href="/">{{ title }}</a>
@@ -7,10 +9,9 @@
     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
       <a class="dropdown-item" href="auto.html">AutoCrack</a>
       <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="caesar.html">Caesar</a>
-      <a class="dropdown-item" href="substitution.html">Substitution</a>
-      <a class="dropdown-item" href="transposition.html">Transposition</a>
-      <a class="dropdown-item" href="vigenere.html">Vigenere</a>
+      {% for cipher in ciphers %}
+      <a class="dropdown-item" href="{{ url_for('ciphers', cipher=cipher) }}">{{ cipher }}</a>
+      {% endfor %}
     </div>
   </div>
   <form class="form-inline my-2 my-lg-0">
