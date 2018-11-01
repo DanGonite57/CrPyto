@@ -1,11 +1,14 @@
 import string
 
+from Formatting import PuncRem
 from Processing import DetectEnglish, PatternGen, PatternList
 
 ALPH = string.ascii_lowercase
 
 
 def decrypt(ciph):
+    ciph = PuncRem.remove(ciph)
+
     patterns = PatternList.patterns()
 
     # Initiates keyMap
@@ -134,7 +137,7 @@ def decrypt(ciph):
 
         i += 1
 
-    return result, score
+    return result, score, keyMap
 
 
 def getScore(text):
