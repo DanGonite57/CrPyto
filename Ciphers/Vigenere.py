@@ -1,3 +1,5 @@
+# ONLY WORKS WITH PRIME-NUMBERED KEYLENGTHS #
+
 import collections
 import string
 
@@ -12,7 +14,7 @@ def decrypt(ciph):
 
     # Find repeats
     sub = {}
-    for subLength in range(len(ciph)):  # May need to switch back to range(3, len(ciph))
+    for subLength in range(3, len(ciph)):  # May need to switch back to range(3, len(ciph))
         for i in range(len(ciph) - subLength + 1):
             try:
                 sub[ciph[i: i + subLength]].append(i)
@@ -31,7 +33,7 @@ def decrypt(ciph):
     # Get keylength factors
     factors = []
     for i in keylens:
-        factors += [j for j in range(2, i + 1) if i % j == 0]
+        factors += getFactors(i)
     factors = [x[0] for x in collections.Counter(factors).most_common() if x[1] == collections.Counter(factors).most_common(1)[0][1]]
 
     # Get substrings
@@ -83,6 +85,10 @@ def decrypt(ciph):
     results, score = DetectEnglish.getBest(allResults)
 
     return result, score
+
+
+def getFactors(n):
+    return [i for i in range(2, n + 1) if n % i == 0]
 
 
 def comboGen(groups, combos, i, result):

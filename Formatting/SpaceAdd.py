@@ -1,7 +1,9 @@
+from Formatting import SpaceRem
 from Processing import DetectEnglish
 
 
 def __process(text, maxWord, words, poss):
+    text = SpaceRem.remove(text)
     textLen = len(text)
     maxLen = 0
     bestWord = ""
