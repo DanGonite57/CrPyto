@@ -28,17 +28,9 @@ def decrypt(ciph, keylen):  # TODO: Add auto functionality (ie keylen n/a)
     # Recreates text with shuffle columns
     results = []
     for perm in poss:
-        results.append(''.join(mergeLists(perm)))
+        results.append(''.join([''.join(x) for x in zip(*perm)]))
 
     # Find most accurate result
     result, score = DetectEnglish.getBest(results)
 
     return result, score
-
-
-def mergeLists(lists):
-    """Merge multiple lists in an alternating fashion."""
-    result = [''] * (sum(map(len, lists)))
-    for i, splice in enumerate(lists):
-        result[i::len(lists)] = splice
-    return result
