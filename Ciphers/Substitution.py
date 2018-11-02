@@ -12,17 +12,13 @@ def decrypt(ciph):
     patterns = PatternList.patterns()
 
     # Initiates keyMap
-    keyMap = {}
-    for letter in ALPH:
-        keyMap[letter] = [x for x in ALPH]
+    keyMap = {key: [x for x in ALPH] for key in ALPH}
 
     # Reformats text into list
     for cw in ciph.split(" "):
 
         # Initiates newMap
-        newMap = {}
-        for letter in ALPH:
-            newMap[letter] = set()
+        newMap = {key: set() for key in ALPH}
 
         # Matches pattern to wordlist
         pattern = PatternGen.pattern(cw)
@@ -45,35 +41,22 @@ def decrypt(ciph):
         recurse = False
 
         # Looks for 1-length (solved) mappings
-        # TODO: Create findSolved function
-        for letter in keyMap:
-            if len(keyMap[letter]) == 1:
-                oldset = len(solved)
-                solved.add(''.join(keyMap[letter]))
-                if len(solved) > oldset:
-                    recurse = True
+        oldlen = len(solved)
+        solved = [val for key, val in keyMap.items() if len(val) == 1]
+        if len(solved) != oldlen:
+            recurse = True
 
         # Removes solved letters from other possible mappings
-        # TODO: Create removeSolved function
-        for letter in keyMap:
-            if len(keyMap[letter]) != 1:
-                for char in solved:
-                    try:
-                        keyMap[letter].remove(char)
-                    except ValueError:
-                        pass
-                    if len(keyMap[letter]) == 1:
-                        recurse = True
+        recurse = removeSolved(keyMap, solved, recurse)
 
     for letter in keyMap:
-        if len(keyMap[letter]) == 0:
+        if not keyMap[letter]:
             keyMap[letter] = "_"
 
     # Creates computed result
-    for letter in keyMap:
-        keyMap[letter] = sorted(keyMap[letter])
+    keyMap = {key: sorted(val) for key, val in keyMap.items()}
     result = sub(ciph, keyMap)
-    score = getScore(result)
+    score = DetectEnglish.detect(result)
 
     # TODO: Stop compromising acc for speed
 
@@ -91,20 +74,10 @@ def decrypt(ciph):
         recurse = False
 
         # Updates list of solved
-        solved = []
-        for x in keyMap:
-            if len(keyMap[x]) == 1:
-                solved.append(keyMap[x])
+        solved = [val for key, val in keyMap.items() if len(val) == 1]
 
         # Removes solved mappings (see TODO)
-        for x in keyMap:
-            if len(keyMap[x]) != 1:
-                for y in solved:
-                    try:
-                        keyMap[x].remove(y)
-                        recurse = True
-                    except ValueError:
-                        pass
+        recurse = removeSolved(keyMap, solved, recurse)
 
         # Update keylens
         keylens = {}
@@ -130,7 +103,7 @@ def decrypt(ciph):
         # Creates possible combos
         combos = []
         vals = {}
-        comboGen(toMap, combos, sorted(toMap.keys()), 0, vals)
+        comboGen(toMap, combos, sorted(toMap), 0, vals)
 
         # Returns best solution
         result, score, keyMap = getBest(combos, ciph, keyMap, sorted(toMap))
@@ -140,11 +113,8 @@ def decrypt(ciph):
     return result, score, keyMap
 
 
-def getScore(text):
-    return DetectEnglish.detect(text)
-
-
 def sub(ciph, keyMap):
+    """Use keyMap to perform substitution algorithm on ciph"""
     unsolved = {}
     result = ""
     for char in ciph:
@@ -162,7 +132,21 @@ def sub(ciph, keyMap):
     return result
 
 
+def removeSolved(keyMap, solved, recurse):
+    """Remove items in solved from all entries of keyMap"""
+    for letter in keyMap:
+        if len(keyMap[letter]) != 1:
+            for char in solved:
+                try:
+                    keyMap[letter].remove(char)
+                    recurse = True
+                except ValueError:
+                    pass
+    return recurse
+
+
 def comboGen(unsolved, combos, keys, i, vals):
+    """Create all possible combinations from limited set"""
     try:
         for letter in unsolved[keys[i]]:
             # Adds a possible letter to combo
@@ -180,6 +164,8 @@ def comboGen(unsolved, combos, keys, i, vals):
 
 
 def getBest(combos, ciph, keyMap, toMap):
+    """Find best mapping in given possibilities"""
+    # TODO: Switch to DetectEnglish.getBest()
     bestScore = 0
     bestMap = {}
 
@@ -190,7 +176,7 @@ def getBest(combos, ciph, keyMap, toMap):
         result = sub(ciph, keyMap)
 
         # Compares newScore to prev. best
-        score = getScore(result)
+        score = DetectEnglish.detect(result)
         if score > bestScore:
             bestScore = score
             bestMap = dict(keyMap)
