@@ -3,7 +3,6 @@
 import collections
 import string
 
-from Ciphers.Transposition import mergeLists
 from Processing import DetectEnglish
 
 ALPH = string.ascii_lowercase
@@ -76,7 +75,7 @@ def decrypt(ciph):
         # Merge keystrings
         results = []
         for combo in combos:
-            results.append(''.join(mergeLists([newsubs[j][x] for j, x in enumerate(combo)])))
+            results.append(''.join([''.join(x) for x in zip([newsubs[j][x] for j, x in enumerate(combo)])]))
 
         # Test result for englishness
         result, score = DetectEnglish.getBest(results)
