@@ -9,7 +9,7 @@
       <a class="dropdown-item" href="auto.html">AutoCrack</a>
       <div class="dropdown-divider"></div>
       {% for cipher in ciphers %}
-      <a class="dropdown-item" href="{{ url_for('ciphers', cipher=cipher) }}">{{ cipher.capitalize() }}</a>
+      <a class="dropdown-item" href="{{ url_for('ciphers.cipher', ciphname=cipher) }}">{{ cipher.capitalize() }}</a>
       {% endfor %}
     </div>
   </div>
