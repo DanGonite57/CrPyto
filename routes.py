@@ -1,17 +1,8 @@
-import os
-
-from flask import (redirect, render_template, request, send_from_directory,
-                   url_for)
+from flask import redirect, render_template, request, url_for
 
 from app import app
 from Formatting import SpaceAdd
 from Processing import DetectEnglish
-
-
-@app.route('/favicon.ico')
-def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico')
 
 
 @app.route('/')
