@@ -13,7 +13,8 @@
                 {% set ALPH = "abcdefghijklmnopqrstuvwxyz" %}
                 {% for x in ALPH[:13] %}
                 <div class="input-group">
-                  <input type="text" class="form-control subinput" name="{{ x }}Sub" maxlength="1" value="{{ vals[x] }}">
+                  <input type="text" class="form-control subinput" name="{{ x }}Sub" maxlength="1" value="{{ vals[x] }}"
+                    onchange="this.form.submit()">
                   <div class="input-group-append">
                     <span class="input-group-text">{{ x.upper() }}</span>
                   </div>
@@ -23,7 +24,8 @@
               <div class="col">
                 {% for x in ALPH[13:26] %}
                 <div class="input-group">
-                  <input type="text" class="form-control subinput" name="{{ x }}Sub" maxlength="1" value="{{ vals[x] }}">
+                  <input type="text" class="form-control subinput" name="{{ x }}Sub" maxlength="1" value="{{ vals[x] }}"
+                    onchange="this.form.submit()">
                   <div class="input-group-append">
                     <span class="input-group-text">{{ x.upper() }}</span>
                   </div>
@@ -34,7 +36,6 @@
           </form>
         </div>
       </div>
-
     </div>
 
     {% block ciphForm %}

@@ -1,3 +1,4 @@
+import string
 from importlib import import_module
 
 from flask import Blueprint, render_template, request
@@ -16,7 +17,12 @@ def cipher(ciphname):
     if request.method == "POST":
         args["ciphText"] = ciphText = PuncRem.remove(request.form["ciphInput"])
         if ciphname.lower() == "substitution":
-            result, _, vals = ciph.decrypt(ciphText)
+            vals = {}
+            for x in string.ascii_lowercase:
+                vals[x] = [request.form[x + "Sub"]]
+                if vals[x] == [""]:
+                    vals[x] = [letter for letter in string.ascii_lowercase]
+            result, _, vals = ciph.decrypt(ciphText, vals)
             args["vals"] = vals
         elif ciphname.lower() == "transposition":
             keylen = request.form["keylenInput"]

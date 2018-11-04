@@ -6,13 +6,10 @@ from Processing import DetectEnglish, PatternGen, PatternList
 ALPH = string.ascii_lowercase
 
 
-def decrypt(ciph):
+def decrypt(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
     ciph = PuncRem.remove(ciph)
 
     patterns = PatternList.patterns()
-
-    # Initiates keyMap
-    keyMap = {key: [x for x in ALPH] for key in ALPH}
 
     # Reformats text into list
     for cw in ciph.split(" "):
@@ -55,7 +52,7 @@ def decrypt(ciph):
 
     # Creates computed result
     keyMap = {key: sorted(val) for key, val in keyMap.items()}
-    result = sub(ciph, keyMap)
+    _, result = sub(ciph, keyMap)
     score = DetectEnglish.detect(result)
 
     # TODO: Stop compromising acc for speed
@@ -86,7 +83,7 @@ def decrypt(ciph):
                 keylens[len(keyMap[letter])].append(letter)
             except KeyError:
                 keylens[len(keyMap[letter])] = [letter]
-
+                
         if recurse:
             i = 0
             continue
@@ -122,6 +119,7 @@ def sub(ciph, keyMap):
             # Maps known values
             if len(keyMap[char]) == 1:
                 result += ''.join(keyMap[char])
+                ciph = ciph[: ciph.index(char)] + "." + ciph[ciph.index(char) + 1::]
             # Replaces unknowns with _
             else:
                 unsolved[char] = keyMap[char]
@@ -129,7 +127,7 @@ def sub(ciph, keyMap):
         # Handles non-alpha chars (eg whitespace)
         except KeyError:
             result += char
-    return result
+    return ciph, result
 
 
 def removeSolved(keyMap, solved, recurse):
@@ -173,7 +171,7 @@ def getBest(combos, ciph, keyMap, toMap):
         for i, char in enumerate(combo):
             # Creates new keyMap
             keyMap[toMap[i]] = char
-        result = sub(ciph, keyMap)
+        _, result = sub(ciph, keyMap)
 
         # Compares newScore to prev. best
         score = DetectEnglish.detect(result)
@@ -181,6 +179,6 @@ def getBest(combos, ciph, keyMap, toMap):
             bestScore = score
             bestMap = dict(keyMap)
 
-    result = sub(ciph, bestMap)
+    _, result = sub(ciph, bestMap)
 
     return result, bestScore, bestMap
