@@ -1,6 +1,14 @@
-from flask import redirect, render_template, url_for
+import os
+
+from flask import redirect, render_template, send_from_directory, url_for
 
 from app import app
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'img/favicon.ico')
 
 
 @app.route('/')

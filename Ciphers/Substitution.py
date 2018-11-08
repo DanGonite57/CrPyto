@@ -15,14 +15,14 @@ def decrypt(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
     for cw in ciph.split(" "):
 
         # Initiates newMap
-        newMap = {key: set() for key in ALPH}
+        newMap = {key: [] for key in ALPH}
 
         # Matches pattern to wordlist
         pattern = PatternGen.pattern(cw)
         try:
             for word in patterns[pattern]:
                 for i, letter in enumerate(cw):
-                    newMap[letter].add(word[i])
+                    newMap[letter] += word[i]
         except KeyError:
             continue
 
@@ -52,7 +52,7 @@ def decrypt(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
 
     # Creates computed result
     keyMap = {key: sorted(val) for key, val in keyMap.items()}
-    _, result = sub(ciph, keyMap)
+    _, result, _ = sub(ciph, keyMap)
     score = DetectEnglish.detect(result)
 
     # TODO: Stop compromising acc for speed
@@ -83,7 +83,7 @@ def decrypt(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
                 keylens[len(keyMap[letter])].append(letter)
             except KeyError:
                 keylens[len(keyMap[letter])] = [letter]
-                
+
         if recurse:
             i = 0
             continue
@@ -114,12 +114,13 @@ def sub(ciph, keyMap):
     """Use keyMap to perform substitution algorithm on ciph"""
     unsolved = {}
     result = ""
+    join = ''.join
     for char in ciph:
         try:
             # Maps known values
             if len(keyMap[char]) == 1:
-                result += ''.join(keyMap[char])
-                ciph = ciph[: ciph.index(char)] + "." + ciph[ciph.index(char) + 1::]
+                result += join(keyMap[char])
+#                ciph = ciph[: ciph.index(char)] + "." + ciph[ciph.index(char) + 1::]
             # Replaces unknowns with _
             else:
                 unsolved[char] = keyMap[char]
@@ -127,7 +128,7 @@ def sub(ciph, keyMap):
         # Handles non-alpha chars (eg whitespace)
         except KeyError:
             result += char
-    return ciph, result
+    return ciph, result, keyMap
 
 
 def removeSolved(keyMap, solved, recurse):
@@ -171,7 +172,7 @@ def getBest(combos, ciph, keyMap, toMap):
         for i, char in enumerate(combo):
             # Creates new keyMap
             keyMap[toMap[i]] = char
-        _, result = sub(ciph, keyMap)
+        _, result, _ = sub(ciph, keyMap)
 
         # Compares newScore to prev. best
         score = DetectEnglish.detect(result)
@@ -179,6 +180,6 @@ def getBest(combos, ciph, keyMap, toMap):
             bestScore = score
             bestMap = dict(keyMap)
 
-    _, result = sub(ciph, bestMap)
+    _, result, _ = sub(ciph, bestMap)
 
     return result, bestScore, bestMap

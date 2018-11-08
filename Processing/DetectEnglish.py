@@ -9,8 +9,9 @@ quads = Quadgrams.quads()
 
 def detect(text):
     score = 0
+    get = quads.get
     for i in range(len(text)):
-        score += quads.get(text[i: i + 4].upper(), 0)
+        score += get(text[i: i + 4].upper(), 0)
     return score / len(text)
 
 
