@@ -8,32 +8,36 @@ from Processing import DetectEnglish
 ALPH = string.ascii_lowercase
 
 
-def decrypt(ciph):
+def decrypt(ciph, factors=[]):
     ciph = ciph.lower()
+    if not factors:
 
-    # Find repeats
-    sub = {}
-    for subLength in range(3, len(ciph)):  # May need to switch back to range(3, len(ciph))
-        for i in range(len(ciph) - subLength + 1):
-            try:
-                sub[ciph[i: i + subLength]].append(i)
-            except KeyError:
-                sub[ciph[i: i + subLength]] = [i]
+        # Find repeats
+        sub = {}
+        for subLength in range(3, len(ciph)):  # May need to switch back to range(3, len(ciph))
+            for i in range(len(ciph) - subLength + 1):
+                try:
+                    sub[ciph[i: i + subLength]].append(i)
+                except KeyError:
+                    sub[ciph[i: i + subLength]] = [i]
 
-    # Remove non-dupes
-    sub = {key: sub[key] for key in sub if len(sub[key]) != 1}
+        # Remove non-dupes
+        sub = {key: sub[key] for key in sub if len(sub[key]) != 1}
 
-    # Get possible key lengths
-    keylens = []
-    for key in sub:
-        for i in range(len(sub[key]) - 1):
-            keylens.append(sub[key][i + 1] - sub[key][i])
+        # Get possible key lengths
+        keylens = []
+        for key in sub:
+            for i in range(len(sub[key]) - 1):
+                keylens.append(sub[key][i + 1] - sub[key][i])
 
-    # Get keylength factors
-    factors = []
-    for i in keylens:
-        factors += getFactors(i)
-    factors = [x[0] for x in collections.Counter(factors).most_common() if x[1] == collections.Counter(factors).most_common(1)[0][1]]
+        # Get keylength factors
+        factors = []
+        for i in keylens:
+            factors += getFactors(i)
+        factors = [x[0] for x in collections.Counter(factors).most_common() if x[1] == collections.Counter(factors).most_common(1)[0][1]]
+
+    else:
+        factors = [factors]
 
     # Get substrings
     allResults = []
