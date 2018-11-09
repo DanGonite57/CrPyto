@@ -1,14 +1,45 @@
+import random
 import string
 
-from Formatting import PuncRem
-from Processing import DetectEnglish, PatternGen, PatternList
+from Formatting import PuncRem, SpaceRem
+from Processing import DetectEnglish, FreqAnalysis
 
 ALPH = string.ascii_lowercase
 
 
-def decrypt(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
-    ciph = PuncRem.remove(ciph)
+def decrypt(ciph):
+    ciph = PuncRem.remove(SpaceRem.remove(ciph)).lower()
 
+    key = [x[0] for x in FreqAnalysis.getFrequencies(ciph)]
+    seq = "etaoinshrdlcumwfgypbvkjxqz"
+    keyMap = dict(zip(key, seq))
+
+    bestKey = []
+    bestScore = 0
+    i = 0
+    while i < 10000:
+        _, result, _ = sub(ciph, keyMap)
+        score = DetectEnglish.detect(result)
+        if score > bestScore:
+            bestScore = score
+            bestKey = list(key)
+            i = 0
+        x = random.randint(0, len(key) - 1)
+        y = random.randint(0, len(key) - 1)
+        key = list(bestKey)
+        key[x], key[y] = bestKey[y], bestKey[x]
+
+        keyMap = dict(zip(key, seq))
+        i += 1
+    bestMap = dict(zip(key, seq))
+    _, result, _ = sub(ciph, bestMap)
+    return result, ciph, bestMap
+
+
+def decryptWithSpaces(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
+    from Processing import PatternList, PatternGen
+
+    ciph = PuncRem.remove(ciph).lower()
     patterns = PatternList.patterns()
 
     # Reformats text into list
@@ -113,21 +144,22 @@ def decrypt(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
 def sub(ciph, keyMap):
     """Use keyMap to perform substitution algorithm on ciph"""
     unsolved = {}
-    result = ""
-    join = ''.join
+    result = []
+    append = result.append
     for char in ciph:
         try:
             # Maps known values
             if len(keyMap[char]) == 1:
-                result += join(keyMap[char])
+                append(keyMap[char][0])
 #                ciph = ciph[: ciph.index(char)] + "." + ciph[ciph.index(char) + 1::]
             # Replaces unknowns with _
             else:
                 unsolved[char] = keyMap[char]
-                result += "_"
+                append("_")
         # Handles non-alpha chars (eg whitespace)
         except KeyError:
-            result += char
+            append(char)
+    result = ''.join(result)
     return ciph, result, keyMap
 
 
