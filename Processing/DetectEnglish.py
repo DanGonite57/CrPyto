@@ -8,11 +8,14 @@ quads = Quadgrams.quads()
 
 
 def detect(text):
-    score = 0
-    get = quads.get
+    score = []
+    append = score.append
     for i in range(len(text)):
-        score += get(text[i: i + 4].upper(), 0)
-    return score / len(text)
+        try:
+            append(quads[text[i: i + 4].upper()])
+        except KeyError:
+            pass
+    return sum(score) / len(text)
 
 
 def detectWord(text):
