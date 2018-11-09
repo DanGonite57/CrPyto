@@ -1,4 +1,3 @@
-import string
 from importlib import import_module
 
 from flask import Blueprint, json, render_template, request
@@ -11,18 +10,13 @@ ciphers = Blueprint("ciphers", __name__, url_prefix="/ciphers")
 
 @ciphers.route("/<ciphname>.html", methods=["GET", "POST"])
 def cipher(ciphname):
-    ALPH = string.ascii_lowercase
     ciphname = ciphname.lower()
     ciph = import_module("Ciphers." + ciphname.capitalize())
     args = {"title": ciphname.capitalize(), "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
     if request.method == "POST":
         args["ciphText"] = ciphText = PuncRem.remove(request.form["ciphInput"]).lower()
         if ciphname == "substitution":
-            vals = {x: ''.join([request.form[x + "Sub"]]) for x in ALPH}
-            if not any([vals[x] for x in vals]):
-                result, _, vals = ciph.decrypt(ciphText)
-            else:
-                _, result, vals = ciph.sub(ciphText, vals)
+            result, _, vals = ciph.decrypt(ciphText)
             args["vals"] = vals
         elif ciphname == "transposition":
             keylen = request.form["keylenInput"]
@@ -49,10 +43,10 @@ def subInputs():
         newval = request.json["val"]
         if newval == "":
             newval = "_"
-        ciphText = PuncRem.remove(request.json["ciph"]).lower()
-        plainText = request.json["plain"].lower()
+        ciphText = SpaceRem.remove(PuncRem.remove(request.json["ciph"])).lower()
+        plainText = SpaceRem.remove(request.json["plain"].lower())
         if plainText == "":
-            new = ciphText.replace(changed, newval)
+            new = ''.join([newval if x in changed else "_" for x in ciphText])
         else:
             plainText = [x for x in plainText]
             for i, letter in enumerate(ciphText):
