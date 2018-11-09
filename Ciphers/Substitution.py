@@ -10,7 +10,7 @@ ALPH = string.ascii_lowercase
 def decrypt(ciph):
     ciph = PuncRem.remove(SpaceRem.remove(ciph)).lower()
 
-    key = [x[0] for x in FreqAnalysis.getFrequencies(ciph)]
+    key = [x[0] for x in FreqAnalysis.getFrequencies(ciph) if x[0] in ALPH]
     seq = "etaoinshrdlcumwfgypbvkjxqz"
     keyMap = dict(zip(key, seq))
 
@@ -18,7 +18,7 @@ def decrypt(ciph):
     bestScore = 0
     i = 0
     while i < 10000:
-        _, result, _ = sub(ciph, keyMap)
+        result = sub(ciph, keyMap)
         score = DetectEnglish.detect(result)
         if score > bestScore:
             bestScore = score
@@ -32,7 +32,7 @@ def decrypt(ciph):
         keyMap = dict(zip(key, seq))
         i += 1
     bestMap = dict(zip(key, seq))
-    _, result, _ = sub(ciph, bestMap)
+    result = sub(ciph, bestMap)
     return result, ciph, bestMap
 
 
@@ -83,7 +83,7 @@ def decryptWithSpaces(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
 
     # Creates computed result
     keyMap = {key: sorted(val) for key, val in keyMap.items()}
-    _, result, _ = sub(ciph, keyMap)
+    result = sub(ciph, keyMap)
     score = DetectEnglish.detect(result)
 
     # TODO: Stop compromising acc for speed
@@ -143,7 +143,6 @@ def decryptWithSpaces(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
 
 def sub(ciph, keyMap):
     """Use keyMap to perform substitution algorithm on ciph"""
-    unsolved = {}
     result = []
     append = result.append
     for char in ciph:
@@ -151,16 +150,14 @@ def sub(ciph, keyMap):
             # Maps known values
             if len(keyMap[char]) == 1:
                 append(keyMap[char][0])
-#                ciph = ciph[: ciph.index(char)] + "." + ciph[ciph.index(char) + 1::]
             # Replaces unknowns with _
             else:
-                unsolved[char] = keyMap[char]
                 append("_")
         # Handles non-alpha chars (eg whitespace)
         except KeyError:
             append(char)
     result = ''.join(result)
-    return ciph, result, keyMap
+    return result
 
 
 def removeSolved(keyMap, solved, recurse):
@@ -204,7 +201,7 @@ def getBest(combos, ciph, keyMap, toMap):
         for i, char in enumerate(combo):
             # Creates new keyMap
             keyMap[toMap[i]] = char
-        _, result, _ = sub(ciph, keyMap)
+        result = sub(ciph, keyMap)
 
         # Compares newScore to prev. best
         score = DetectEnglish.detect(result)
@@ -212,6 +209,6 @@ def getBest(combos, ciph, keyMap, toMap):
             bestScore = score
             bestMap = dict(keyMap)
 
-    _, result, _ = sub(ciph, bestMap)
+    result = sub(ciph, bestMap)
 
     return result, bestScore, bestMap
