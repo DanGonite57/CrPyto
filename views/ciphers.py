@@ -1,10 +1,9 @@
 import string
-import sys
 from importlib import import_module
 
 from flask import Blueprint, json, render_template, request
 
-from Formatting import PuncRem, SpaceAdd
+from Formatting import PuncRem, SpaceAdd, SpaceRem
 from Processing import DetectEnglish
 
 ciphers = Blueprint("ciphers", __name__, url_prefix="/ciphers")
@@ -55,12 +54,19 @@ def subInputs():
         if plainText == "":
             new = ciphText.replace(changed, newval)
         else:
-            ciphText = [x for x in ciphText]
             plainText = [x for x in plainText]
             for i, letter in enumerate(ciphText):
                 if letter == changed:
                     plainText[i] = newval
             new = "".join(plainText)
         return json.dumps({"plain": new})
+    return "error"
 
+
+@ciphers.route("/addSpaces", methods=["GET", "POST"])
+def addSpaces():
+    if request.method == "POST":
+        plainText = SpaceRem.remove(request.json["plain"])
+        plainText = SpaceAdd.add(plainText)
+        return json.dumps({"plain": plainText})
     return "error"
