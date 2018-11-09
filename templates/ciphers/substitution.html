@@ -13,8 +13,7 @@
                 {% set ALPH = "abcdefghijklmnopqrstuvwxyz" %}
                 {% for x in ALPH[:13] %}
                 <div class="input-group">
-                  <input type="text" class="form-control subinput" name="{{ x }}Sub" maxlength="1" value="{{ vals[x] }}"
-                    onchange="this.form.submit()">
+                  <input type="text" class="form-control subinput" name="{{ x }}Sub" maxlength="1" value="{{ vals[x] }}">
                   <div class="input-group-append">
                     <span class="input-group-text">{{ x.upper() }}</span>
                   </div>
@@ -24,8 +23,7 @@
               <div class="col">
                 {% for x in ALPH[13:26] %}
                 <div class="input-group">
-                  <input type="text" class="form-control subinput" name="{{ x }}Sub" maxlength="1" value="{{ vals[x] }}"
-                    onchange="this.form.submit()">
+                  <input type="text" class="form-control subinput" name="{{ x }}Sub" maxlength="1" value="{{ vals[x] }}">
                   <div class="input-group-append">
                     <span class="input-group-text">{{ x.upper() }}</span>
                   </div>
@@ -51,4 +49,8 @@
     {% endblock %}
   </div>
 </div>
+{% endblock %}
+
+{% block footer %}
+<script src="{{ url_for('static', filename='js/subInput.js') }}"></script>
 {% endblock %}
