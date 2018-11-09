@@ -6,6 +6,9 @@
     <button class="btn btn-secondary dropdown-toggle" id="toolsDrop" role="button" data-toggle="dropdown" aria-haspopup="true"
       aria-expanded="false">Tools</button>
     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+      <a class="dropdown-item" href="{{ url_for('tools.addSpaces') }}">Add Spaces</a>
+      <a class="dropdown-item" href="{{ url_for('tools.removeSpaces') }}">Remove Spaces</a>
+      <a class="dropdown-item" href="{{ url_for('tools.removePunctuation') }}">Remove Puncuation</a>
     </div>
   </div>
   <div class="dropdown-container mr-2">
