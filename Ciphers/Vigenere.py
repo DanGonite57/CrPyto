@@ -1,6 +1,5 @@
-# ONLY WORKS WITH PRIME-NUMBERED KEYLENGTHS #
-
 import collections
+import itertools
 import string
 
 from Processing import DetectEnglish
@@ -8,7 +7,7 @@ from Processing import DetectEnglish
 ALPH = string.ascii_lowercase
 
 
-def decrypt(ciph, factors=[]):
+def decrypt(ciph, factors=None):
     ciph = ciph.lower()
     if not factors:
 
@@ -42,9 +41,11 @@ def decrypt(ciph, factors=[]):
     # Get substrings
     allResults = []
     for n in factors:
+
         substrings = []
         keycombos = []
         newsubs = {}
+
         for i in range(n):
             substring = ''.join([ciph[x] for x in range(i, len(ciph), n)])
             substrings.append(substring)
@@ -75,11 +76,13 @@ def decrypt(ciph, factors=[]):
         # Create combinations
         combos = []
         comboGen(keycombos, combos, 0, [[]] * len(keycombos))
-
         # Merge keystrings
         results = []
         for combo in combos:
-            results.append(''.join([''.join(x) for x in zip([newsubs[j][x] for j, x in enumerate(combo)])]))
+            keystrings = []
+            for i, x in enumerate(combo):
+                keystrings.append(newsubs[i][x])
+            results.append(''.join([''.join(x) for x in itertools.zip_longest(*keystrings, fillvalue="")]))
 
         # Test result for englishness
         result, score = DetectEnglish.getBest(results)
