@@ -13,6 +13,7 @@ $(document).ready(function () {
       }),
       success: function (json) {
         document.getElementById("plainInput").value = json["plain"]
+        document.getElementById("scoreLbl").innerHTML = json["score"]
         expandTextarea(document.getElementById("plainInput"))
         expandTextarea(document.getElementById("ciphInput"))
       }

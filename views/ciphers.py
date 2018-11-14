@@ -16,7 +16,14 @@ def cipher(ciphname):
     if request.method == "POST":
         args["ciphText"] = ciphText = PuncRem.remove(request.form["ciphInput"]).lower()
         if ciphname == "substitution":
-            result, _, vals = ciph.decrypt(ciphText)
+            if request.form.get("useSpace"):
+                result, _, vals = ciph.decryptWithSpaces(ciphText)
+                args["result"] = result
+                args["vals"] = vals
+                args["score"] = DetectEnglish.detectWord(result) * 100
+                return render_template(f"ciphers/{ciphname}.html", **args)
+            else:
+                result, _, vals = ciph.decrypt(ciphText)
             args["vals"] = vals
         elif ciphname == "transposition":
             keylen = request.form["keylenInput"]
@@ -31,7 +38,7 @@ def cipher(ciphname):
             result, _ = ciph.decrypt(ciphText)
         args["result"] = result
         result = SpaceAdd.add(result)
-        args["score"] = DetectEnglish.detectWord(result)
+        args["score"] = DetectEnglish.detectWord(result) * 100
     return render_template(f"ciphers/{ciphname}.html", **args)
 
 
@@ -53,7 +60,8 @@ def subInputs():
                 if letter == changed:
                     plainText[i] = newval
             new = "".join(plainText)
-        return json.dumps({"plain": new})
+        score = DetectEnglish.detectWord(SpaceAdd.add(new)) * 100
+        return json.dumps({"plain": new, "score": f"{score}% certainty"})
     return "error"
 
 
@@ -62,5 +70,6 @@ def addSpaces():
     if request.method == "POST":
         plainText = SpaceRem.remove(request.json["plain"])
         plainText = SpaceAdd.add(plainText)
-        return json.dumps({"plain": plainText})
+        score = DetectEnglish.detectWord(plainText) * 100
+        return json.dumps({"plain": plainText, "score": f"{score}% certainty"})
     return "error"

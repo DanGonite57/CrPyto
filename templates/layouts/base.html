@@ -27,6 +27,9 @@
     }
   </style>
 
+  {% block head %}
+  {% endblock %}
+
 </head>
 
 <body>
@@ -44,7 +47,7 @@
     {% block crackBtn %}
     <div class="form-row fixed-bottom my-2 mx-2">
       <div class="col">
-        <label> {{ score * 100 }}% certainty</label>
+        <label id="scoreLbl">{{ score }}% certainty</label>
       </div>
       <div class="col">
         <div class="float-right">

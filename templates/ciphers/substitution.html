@@ -4,34 +4,34 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-3">
-
       <div class="container-fluid">
         <div class="row">
-          <form class="my-2">
-            <div class="form-row">
-              <div class="col">
-                {% set ALPH = "abcdefghijklmnopqrstuvwxyz" %}
-                {% for x in ALPH[:13] %}
-                <div class="input-group">
-                  <input type="text" class="form-control subinput" name="{{ x }}Sub" maxlength="1" value="{{ vals[x] }}">
-                  <div class="input-group-append">
-                    <span class="input-group-text">{{ x.upper() }}</span>
-                  </div>
-                </div>
-                {% endfor %}
-              </div>
-              <div class="col">
-                {% for x in ALPH[13:26] %}
-                <div class="input-group">
-                  <input type="text" class="form-control subinput" name="{{ x }}Sub" maxlength="1" value="{{ vals[x] }}">
-                  <div class="input-group-append">
-                    <span class="input-group-text">{{ x.upper() }}</span>
-                  </div>
-                </div>
-                {% endfor %}
+          <div class="col">
+            {% set ALPH = "abcdefghijklmnopqrstuvwxyz" %}
+            {% for x in ALPH[:13] %}
+            <div class="input-group">
+              <input type="text" class="form-control subinput" name="{{ x }}Sub" maxlength="1" value="{{ vals[x] }}">
+              <div class="input-group-append">
+                <span class="input-group-text">{{ x.upper() }}</span>
               </div>
             </div>
-          </form>
+            {% endfor %}
+          </div>
+          <div class="col">
+            {% for x in ALPH[13:26] %}
+            <div class="input-group">
+              <input type="text" class="form-control subinput" name="{{ x }}Sub" maxlength="1" value="{{ vals[x] }}">
+              <div class="input-group-append">
+                <span class="input-group-text">{{ x.upper() }}</span>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="row my-2">
+          <div class="checkbox">
+            <label class="mx-2"><input class="mx-2" type="checkbox" name="useSpace" value="useSpace">Use Spaces</label>
+          </div>
         </div>
       </div>
     </div>
