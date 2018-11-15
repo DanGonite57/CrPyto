@@ -26,7 +26,7 @@ def decrypt(ciph, keylen):  # TODO: Add auto functionality (ie keylen n/a)
         poss[i] = [text[n[x]] for x in range(len(text))]
 
     # Recreates text with shuffle columns
-    results = [''.join([''.join(x) for x in zip(*perm)]) for perm in poss]
+    results = [''.join([''.join(x) for x in itertools.zip_longest(*perm, fillvalue="")]) for perm in poss]
 
     # Find most accurate result
     result, score = DetectEnglish.getBest(results)
