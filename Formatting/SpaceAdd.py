@@ -3,7 +3,7 @@ from Processing import DetectEnglish
 
 
 def __process(text, maxWord, words, poss):
-    text = SpaceRem.remove(text)
+    text = SpaceRem.remove(text.lower())
     textLen = len(text)
     maxLen = 0
     bestWord = ""
