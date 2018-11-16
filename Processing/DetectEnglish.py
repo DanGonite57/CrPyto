@@ -2,7 +2,7 @@ import collections
 
 from Processing import Quadgrams
 
-with open(".\\static\\WordList.txt", "r") as f:
+with open("./static/WordList.txt", "r") as f:
     wordset = set(f.read().split())
 quads = Quadgrams.quads()
 
