@@ -86,8 +86,6 @@ def decryptWithSpaces(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
     result = sub(ciph, keyMap)
     score = DetectEnglish.detect(result)
 
-    # TODO: Stop compromising acc for speed
-
     # Gets length of possibility lists
     keylens = {}
     for letter in keyMap:
@@ -97,14 +95,13 @@ def decryptWithSpaces(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
             keylens[len(keyMap[letter])] = [letter]
 
     i = 0
-
     while i <= max(keylens.keys()):
         recurse = False
 
         # Updates list of solved
         solved = [val for key, val in keyMap.items() if len(val) == 1]
 
-        # Removes solved mappings (see TODO)
+        # Removes solved mappings
         recurse = removeSolved(keyMap, solved, recurse)
 
         # Update keylens
@@ -193,7 +190,6 @@ def comboGen(unsolved, combos, keys, i, vals):
 
 def getBest(combos, ciph, keyMap, toMap):
     """Find best mapping in given possibilities"""
-    # TODO: Switch to DetectEnglish.getBest()
     bestScore = 0
     bestMap = {}
 

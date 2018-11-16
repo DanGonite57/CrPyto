@@ -5,7 +5,7 @@ from Formatting import PuncRem, SpaceRem
 from Processing import DetectEnglish
 
 
-def decrypt(ciph, keylen):  # TODO: Add auto functionality (ie keylen n/a)
+def decrypt(ciph, keylen):
     ciph = PuncRem.remove(SpaceRem.remove(ciph))
 
     # Splice ciph into keylens
