@@ -1,5 +1,4 @@
 import itertools
-import math
 import random
 
 from Formatting import PuncRem, SpaceRem
@@ -24,18 +23,20 @@ def decrypt(ciph, keylen):
             except IndexError:
                 break
 
-    # Shuffles transposed columns
-    poss = [[]] * math.factorial(keylen)
-    for i, n in enumerate(itertools.permutations(range(len(text)))):
-        poss[i] = [text[n[x]] for x in range(len(text))]
+    bestKey = []
+    bestScore = 0
+    i = 0
+    for i, key in enumerate(itertools.permutations(range(len(text)))):
+        result = recreate(shuffle(text, key))
+        score = DetectEnglish.detect(result)
+        if score > bestScore:
+            bestScore = score
+            bestKey = list(key)
+            i = 0
 
-    # Recreates text with shuffle columns
-    results = [''.join([''.join(x) for x in itertools.zip_longest(*perm, fillvalue="")]) for perm in poss]
+    result = recreate(shuffle(text, bestKey))
 
-    # Find most accurate result
-    result, _ = DetectEnglish.getBest(results)
-
-    return result, ""
+    return result, list(map(str, bestKey))
 
 
 def decryptLongKey(ciph, keylen):
@@ -97,11 +98,10 @@ def decryptWithKey(ciph, key):
     # Translate key to nums
     sortedkey = sorted(key)
     key = [sortedkey.index(k) for k in key]
-    print(key)
 
     result = recreate(shuffle(text, key))
 
-    return result, map(str, key)
+    return result, list(map(str, key))
 
 
 def shuffle(columns, key):

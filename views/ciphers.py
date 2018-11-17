@@ -26,15 +26,14 @@ def cipher(ciphname):
                 result, _, vals = ciph.decrypt(ciphText)
             args["vals"] = vals
         elif ciphname == "transposition":
-            key = request.form["keyInput"]
+            key = request.form["keyInput"].rstrip().split(",")
             if key:
-                result, key = ciph.decryptWithKey(ciphText, key.split(" "))
-                args["key"] = ' '.join(key)
-                print(key)
+                result, key = ciph.decryptWithKey(ciphText, key)
+                args["key"] = ','.join(key)
             else:
                 args["keylen"] = keylen = request.form["keylenInput"] or 0
                 result, key = ciph.decrypt(ciphText, int(keylen))
-                args["key"] = ' '.join(key)
+                args["key"] = ','.join(key)
         elif ciphname == "vigenere":
             keylen = request.form["keylenInput"]
             try:
