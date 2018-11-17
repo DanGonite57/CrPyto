@@ -22,6 +22,12 @@ def index():
 
 
 @app.errorhandler(404)
-@app.errorhandler(500)
-def exception(e):
-    return render_template(f"{str(e)}.html"), e
+def exception(error):
+    # return render_template(f"errors/{str(e)}.html"), e
+    return render_template("errors/404.html", title="404", error=error), 404
+
+
+@app.errorhandler(Exception)
+def oof(error):
+    print(error)
+    return render_template("errors/500.html", title="500"), 500
