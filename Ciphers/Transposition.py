@@ -109,4 +109,4 @@ def shuffle(columns, key):
 
 
 def recreate(columns):
-    return (''.join([''.join(x) for x in itertools.zip_longest(*columns, fillvalue="")]))
+    return ''.join([''.join(x) for x in itertools.zip_longest(*columns, fillvalue="")])
