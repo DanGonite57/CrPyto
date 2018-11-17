@@ -26,9 +26,9 @@ def cipher(ciphname):
                 result, _, vals = ciph.decrypt(ciphText)
             args["vals"] = vals
         elif ciphname == "transposition":
-            key = request.form["keyInput"].rstrip().split(",")
+            key = request.form["keyInput"]
             if key:
-                result, key = ciph.decryptWithKey(ciphText, key)
+                result, key = ciph.decryptWithKey(ciphText, key.split(","))
                 args["key"] = ','.join(key)
             else:
                 args["keylen"] = keylen = request.form["keylenInput"] or 0
