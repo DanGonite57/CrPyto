@@ -76,7 +76,7 @@ def decryptLongKey(ciph, keylen):
 
     result = recreate(shuffle(text, bestKey))
 
-    return result, bestKey
+    return result, list(map(str, key))
 
 
 def decryptWithKey(ciph, key):
