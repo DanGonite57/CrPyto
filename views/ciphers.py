@@ -12,7 +12,7 @@ ciphers = Blueprint("ciphers", __name__, url_prefix="/ciphers")
 def cipher(ciphname):
     ciphname = ciphname.lower()
     ciph = import_module("Ciphers." + ciphname.capitalize())
-    args = {"title": ciphname.capitalize(), "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
+    args = {"title": ciphname.capitalize(), "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": "", "key": ""}
     if request.method == "POST":
         args["ciphText"] = ciphText = PuncRem.remove(request.form["ciphInput"]).lower()
         if ciphname == "substitution":
@@ -26,8 +26,14 @@ def cipher(ciphname):
                 result, _, vals = ciph.decrypt(ciphText)
             args["vals"] = vals
         elif ciphname == "transposition":
-            keylen = request.form["keylenInput"]
-            result, _ = ciph.decrypt(ciphText, int(keylen))
+            key = request.form["keyInput"].rstrip().split(",")
+            if key:
+                result, key = ciph.decryptWithKey(ciphText, key)
+                args["key"] = ','.join(key)
+            else:
+                args["keylen"] = keylen = request.form["keylenInput"] or 0
+                result, key = ciph.decrypt(ciphText, int(keylen))
+                args["key"] = ','.join(key)
         elif ciphname == "vigenere":
             keylen = request.form["keylenInput"]
             try:
