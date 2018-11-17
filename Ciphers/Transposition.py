@@ -5,55 +5,28 @@ from Formatting import PuncRem, SpaceRem
 from Processing import DetectEnglish
 
 
-def decrypt(ciph, keylen):
-    if keylen > 7:
-        return decryptLongKey(ciph, keylen)
+def decrypt(ciph, keylen=0, key=""):
+    if not (key or keylen):
+        return "", ""
+    return process(ciph, keylen=keylen, key=key)
 
-    ciph = PuncRem.remove(SpaceRem.remove(ciph))
 
-    # Splice ciph into keylens
-    rows = [ciph[i: i + keylen] for i in range(0, len(ciph), keylen)]
-
-    # Transpose ciph
-    text = [""] * keylen
-    for i in range(keylen):
-        for row in rows:
-            try:
-                text[i] += row[i]
-            except IndexError:
-                break
-
+def decryptShortKey(text):
     bestKey = []
     bestScore = 0
-    i = 0
-    for i, key in enumerate(itertools.permutations(range(len(text)))):
+    for key in itertools.permutations(range(len(text))):
         result = recreate(shuffle(text, key))
         score = DetectEnglish.detect(result)
         if score > bestScore:
             bestScore = score
             bestKey = list(key)
-            i = 0
 
     result = recreate(shuffle(text, bestKey))
 
     return result, list(map(str, bestKey))
 
 
-def decryptLongKey(ciph, keylen):
-    ciph = PuncRem.remove(SpaceRem.remove(ciph))
-
-    # Splice ciph into keylens
-    rows = [ciph[i: i + keylen] for i in range(0, len(ciph), keylen)]
-
-    # Transpose ciph
-    text = [""] * keylen
-    for i in range(keylen):
-        for row in rows:
-            try:
-                text[i] += row[i]
-            except IndexError:
-                break
-
+def decryptLongKey(text, keylen):
     key = list(range(keylen))
     random.shuffle(key)
 
@@ -79,8 +52,26 @@ def decryptLongKey(ciph, keylen):
     return result, list(map(str, key))
 
 
-def decryptWithKey(ciph, key):
-    keylen = len(key)
+def decryptWithKey(text, key):
+
+    # Translate key to nums
+    try:
+        key = list(map(int, key))
+    except ValueError:
+        pass
+    sortedkey = sorted(key)
+    key = [sortedkey.index(k) for k in key]
+    result = recreate(shuffle(text, key))
+
+    return result, list(map(str, key))
+
+
+def process(ciph, **kwargs):
+    key = kwargs["key"]
+    keylen = kwargs["keylen"]
+    if key:
+        keylen = len(key.split(","))
+
     ciph = PuncRem.remove(SpaceRem.remove(ciph))
 
     # Splice ciph into keylens
@@ -95,18 +86,11 @@ def decryptWithKey(ciph, key):
             except IndexError:
                 break
 
-    # Translate key to nums
-    try:
-        key = list(map(int, key))
-    except ValueError:
-        pass
-    sortedkey = sorted(key)
-    print(sortedkey, key)
-    key = [sortedkey.index(k) for k in key]
-
-    result = recreate(shuffle(text, key))
-
-    return result, list(map(str, key))
+    if key:
+        return decryptWithKey(text, key.split(","))
+    if keylen < 8:
+        return decryptShortKey(text)
+    return decryptLongKey(text, keylen)
 
 
 def shuffle(columns, key):
@@ -114,4 +98,4 @@ def shuffle(columns, key):
 
 
 def recreate(columns):
-    return ''.join([''.join(x) for x in itertools.zip_longest(*columns, fillvalue="")])
+    return ''.join([''.join(x) for x in itertools.zip_longest(*columns, fillvalue="_")])

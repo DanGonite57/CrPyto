@@ -27,13 +27,13 @@ def cipher(ciphname):
             args["vals"] = vals
         elif ciphname == "transposition":
             key = request.form["keyInput"]
-            if key:
-                result, key = ciph.decryptWithKey(ciphText, key.split(","))
-                args["key"] = ','.join(key)
-            else:
-                args["keylen"] = keylen = request.form["keylenInput"] or 0
-                result, key = ciph.decrypt(ciphText, int(keylen))
-                args["key"] = ','.join(key)
+            try:
+                keylen = int(request.form["keylenInput"])
+            except ValueError:
+                keylen = 0
+            args["keylen"] = keylen
+            result, key = ciph.decrypt(ciphText, key=key, keylen=keylen)
+            args["key"] = ','.join(key)
         elif ciphname == "vigenere":
             keylen = request.form["keylenInput"]
             try:
