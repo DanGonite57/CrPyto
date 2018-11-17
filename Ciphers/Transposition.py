@@ -96,7 +96,12 @@ def decryptWithKey(ciph, key):
                 break
 
     # Translate key to nums
+    try:
+        key = list(map(int, key))
+    except ValueError:
+        pass
     sortedkey = sorted(key)
+    print(sortedkey, key)
     key = [sortedkey.index(k) for k in key]
 
     result = recreate(shuffle(text, key))
