@@ -6,8 +6,8 @@ ALPH = string.ascii_lowercase
 
 
 def decrypt(ciph):
-    results = []
-
+    bestScore = 9e99
+    bestResult = ""
     for i in range(26):
         result = ""
         shift = ALPH[i::] + ALPH[:i]
@@ -16,7 +16,9 @@ def decrypt(ciph):
                 result += shift[ALPH.index(letter)]
             except ValueError:
                 result += letter
-        results.append(result)
-    result, score = DetectEnglish.getBest(results)
+        score = DetectEnglish.chiSquared(result)
+        if score < bestScore:
+            bestScore = score
+            bestResult = result
 
-    return result, score
+    return bestResult, bestScore
