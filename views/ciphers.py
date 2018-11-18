@@ -1,5 +1,3 @@
-from importlib import import_module
-
 from flask import Blueprint, json, render_template, request
 
 from Formatting import PuncRem, SpaceAdd, SpaceRem
@@ -7,51 +5,79 @@ from Processing import DetectEnglish
 
 ciphers = Blueprint("ciphers", __name__, url_prefix="/ciphers")
 
+METHODS = ["GET", "POST"]
 
-@ciphers.route("/<ciphname>.html", methods=["GET", "POST"])
-def cipher(ciphname):
-    ciphname = ciphname.lower()
-    ciph = import_module("Ciphers." + ciphname.capitalize())
-    args = {"title": ciphname.capitalize(), "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": "", "key": ""}
+
+@ciphers.route("/caesar.html", methods=METHODS)
+def caesar():
+    args = {"title": "Caesar", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": 0, "key": ""}
     if request.method == "POST":
-        args["ciphText"] = ciphText = PuncRem.remove(request.form["ciphInput"]).lower()
-        if ciphname == "substitution":
-            if request.form.get("useSpace"):
-                result, _, vals = ciph.decryptWithSpaces(ciphText)
-                args["result"] = result
-                args["vals"] = vals
-                args["score"] = DetectEnglish.detectWord(result) * 100
-                return render_template(f"ciphers/{ciphname}.html", **args)
-            else:
-                result, _, vals = ciph.decrypt(ciphText)
-            args["vals"] = vals
-        elif ciphname == "transposition":
-            key = request.form["keyInput"]
-            try:
-                keylen = int(request.form["keylenInput"])
-            except ValueError:
-                keylen = 0
-            args["keylen"] = keylen
-            result, key = ciph.decrypt(ciphText, key=key, keylen=keylen)
-            args["key"] = ','.join(key)
-        elif ciphname == "vigenere":
-            keylen = request.form["keylenInput"]
-            try:
-                result, _ = ciph.decrypt(ciphText, int(keylen))
-            except ValueError:
-                result, _ = ciph.decrypt(ciphText)
+        from Ciphers import Caesar
+
+        ciphText = request.form["ciphInput"].lower()
+        result, _ = Caesar.decrypt(ciphText)
+        score = DetectEnglish.detect(SpaceAdd.add(result)) * 100
+
+        args = {"title": "Caesar", "ciphText": ciphText, "result": result, "score": score}
+    return render_template(f"ciphers/caesar.html", **args)
+
+
+@ciphers.route("/substitution.html", methods=METHODS)
+def substitution():
+    args = {"title": "Substitution", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": 0, "key": ""}
+    if request.method == "POST":
+        from Ciphers import Substitution
+
+        ciphText = PuncRem.remove(request.form["ciphInput"]).lower()
+
+        if request.form.get("useSpace"):
+            result, _, vals = Substitution.decryptWithSpaces(ciphText)
         else:
-            result, _ = ciph.decrypt(ciphText)
-        args["result"] = result
-        result = SpaceAdd.add(result)
-        args["score"] = DetectEnglish.detectWord(result) * 100
-    return render_template(f"ciphers/{ciphname}.html", **args)
+            result, _, vals = Substitution.decrypt(ciphText)
+        score = DetectEnglish.detectWord(SpaceAdd.add(result)) * 100
+
+        args = {"title": "Substitution", "ciphText": ciphText, "result": result, "score": score, "vals": vals}
+    return render_template(f"ciphers/substitution.html", **args)
 
 
-@ciphers.route("/subInputs", methods=["GET", "POST"])
+@ciphers.route("/transposition.html", methods=METHODS)
+def transposition():
+    args = {"title": "Transposition", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": 0, "key": ""}
+    if request.method == "POST":
+        from Ciphers import Transposition
+
+        ciphText = PuncRem.remove(request.form["ciphInput"]).lower()
+        keylen = int(request.form["keylenInput"] or 0)
+        key = request.form["keyInput"]
+
+        result, key = Transposition.decrypt(ciphText, key=key, keylen=keylen)
+        key = ','.join(key)
+        spacedResult = SpaceAdd.add(result)
+        score = DetectEnglish.detectWord(spacedResult) * 100
+
+        args = {"title": "Transposition", "ciphText": ciphText, "result": result, "score": score, "keylen": keylen, "key": key}
+    return render_template(f"ciphers/transposition.html", **args)
+
+
+@ciphers.route("/vigenere.html", methods=METHODS)
+def vigenere():
+    args = {"title": "Vigenere", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": 0, "key": ""}
+    if request.method == "POST":
+        from Ciphers import Vigenere
+
+        ciphText = request.form["ciphInput"]
+        keylen = request.form["keylenInput"]
+
+        result, key, _ = Vigenere.decrypt(ciphText)
+        score = DetectEnglish.detectWord(SpaceAdd.add(result)) * 100
+
+        args = {"title": "Transposition", "ciphText": ciphText, "result": result, "score": score, "keylen": keylen, "key": key}
+    return render_template(f"ciphers/vigenere.html", **args)
+
+
+@ciphers.route("/subInputs", methods=METHODS)
 def subInputs():
     if request.method == "POST":
-        # from Ciphers import Substitution
         changed = request.json["name"][0]
         newval = request.json["val"]
         if newval == "":
@@ -71,7 +97,7 @@ def subInputs():
     return "error"
 
 
-@ciphers.route("/addSpaces", methods=["GET", "POST"])
+@ciphers.route("/addSpaces", methods=METHODS)
 def addSpaces():
     if request.method == "POST":
         plainText = SpaceRem.remove(request.json["plain"])
