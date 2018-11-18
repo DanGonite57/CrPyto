@@ -2,12 +2,52 @@ import collections
 import itertools
 import string
 
+from Formatting import PuncRem, SpaceRem
 from Processing import DetectEnglish
 
 ALPH = string.ascii_lowercase
 
 
-def decrypt(ciph, factors=None):
+def decrypt(ciph):
+    ciph = PuncRem.remove(SpaceRem.remove(ciph.lower()))
+
+    sub = {}
+    for i in range(2, 20):  # TODO: Change to "for i in range(2, len(ciph)):"
+        sub[i] = []
+        for j in range(i):
+            sub[i].append(ciph[j::i])
+
+    ic = {}
+    for i in sub:
+        avgic = sum(map(DetectEnglish.indexOfCoincidence, sub[i])) / i
+        if avgic > 0.06:
+            ic[i] = avgic
+
+    for i in ic:
+        print(sub[i])
+        key = [x for x in "a" * i]
+        bestScore = 0
+        bestKey = ''.join(key)
+        for index in range(i):
+            for x in ALPH:
+                key[index] = x
+                new = []
+                for j, char in enumerate(key):
+                    k = ALPH.index(char)
+                    shift = ALPH[-k::] + ALPH[:-k]
+                    new.append(''.join([shift[ALPH.index(x)] for x in sub[i][j]]))
+                result = ''.join(map(''.join, itertools.zip_longest(*new, fillvalue="")))
+                score = DetectEnglish.detect(result)
+                if score > bestScore:
+                    bestScore = score
+                    bestKey = ''.join(key)
+                    print(index, bestScore, bestKey)
+                new = []
+            print(bestScore, bestKey)
+        return bestScore, bestKey
+
+
+def decryptUsingRepeats(ciph, factors=None):
     ciph = ciph.lower()
     if not factors:
 
