@@ -37,6 +37,8 @@ def freqMatch(text):
 
 
 def indexOfCoincidence(text):
+    if len(text) == 1:
+        return 0
     text = SpaceRem.remove(PuncRem.remove(text))
     count = collections.Counter(text).most_common()
     ic = sum([(x[1] * (x[1] - 1)) / (len(text) * (len(text) - 1)) for x in count])

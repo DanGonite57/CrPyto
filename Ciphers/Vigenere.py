@@ -2,6 +2,7 @@ import collections
 import itertools
 import string
 
+from Ciphers import Caesar
 from Formatting import PuncRem, SpaceRem
 from Processing import DetectEnglish
 
@@ -12,7 +13,7 @@ def decrypt(ciph):
     ciph = PuncRem.remove(SpaceRem.remove(ciph.lower()))
 
     sub = {}
-    for i in range(2, 20):  # TODO: Change to "for i in range(2, len(ciph)):"
+    for i in range(2, 26):
         sub[i] = []
         for j in range(i):
             sub[i].append(ciph[j::i])
@@ -23,28 +24,24 @@ def decrypt(ciph):
         if avgic > 0.06:
             ic[i] = avgic
 
+    bestKey = ""
+    bestScore = 0
+    bestResult = ""
     for i in ic:
-        print(sub[i])
-        key = [x for x in "a" * i]
-        bestScore = 0
-        bestKey = ''.join(key)
-        for index in range(i):
-            for x in ALPH:
-                key[index] = x
-                new = []
-                for j, char in enumerate(key):
-                    k = ALPH.index(char)
-                    shift = ALPH[-k::] + ALPH[:-k]
-                    new.append(''.join([shift[ALPH.index(x)] for x in sub[i][j]]))
-                result = ''.join(map(''.join, itertools.zip_longest(*new, fillvalue="")))
-                score = DetectEnglish.detect(result)
-                if score > bestScore:
-                    bestScore = score
-                    bestKey = ''.join(key)
-                    print(index, bestScore, bestKey)
-                new = []
-            print(bestScore, bestKey)
-        return bestScore, bestKey
+        results = []
+        key = []
+        for x in sub[i]:
+            result, shift = Caesar.decrypt(x)
+            results.append(result)
+            key.append(shift)
+        result = ''.join(map(''.join, itertools.zip_longest(*results, fillvalue="")))
+        score = DetectEnglish.detect(result)
+        if score > bestScore:
+            bestScore = score
+            bestKey = ''.join(key)
+            bestResult = result
+
+    return bestResult, bestKey, bestScore
 
 
 def decryptUsingRepeats(ciph, factors=None):
