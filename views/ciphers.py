@@ -10,7 +10,7 @@ METHODS = ["GET", "POST"]
 
 @ciphers.route("/caesar.html", methods=METHODS)
 def caesar():
-    args = {"title": "Caesar", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": 0, "key": ""}
+    args = {"title": "Caesar", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": "", "key": ""}
     if request.method == "POST":
         from Ciphers import Caesar
 
@@ -24,7 +24,7 @@ def caesar():
 
 @ciphers.route("/substitution.html", methods=METHODS)
 def substitution():
-    args = {"title": "Substitution", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": 0, "key": ""}
+    args = {"title": "Substitution", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": "", "key": ""}
     if request.method == "POST":
         from Ciphers import Substitution
 
@@ -42,7 +42,7 @@ def substitution():
 
 @ciphers.route("/transposition.html", methods=METHODS)
 def transposition():
-    args = {"title": "Transposition", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": 0, "key": ""}
+    args = {"title": "Transposition", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": "", "key": ""}
     if request.method == "POST":
         from Ciphers import Transposition
 
@@ -61,7 +61,7 @@ def transposition():
 
 @ciphers.route("/vigenere.html", methods=METHODS)
 def vigenere():
-    args = {"title": "Vigenere", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": 0, "key": ""}
+    args = {"title": "Vigenere", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": "", "key": ""}
     if request.method == "POST":
         from Ciphers import Vigenere
 
