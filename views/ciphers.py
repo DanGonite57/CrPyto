@@ -67,6 +67,7 @@ def vigenere():
 
         ciphText = request.form["ciphInput"]
         keylen = request.form["keylenInput"]
+        key = request.form["keyInput"]
 
         result, key, _ = Vigenere.decrypt(ciphText)
         score = DetectEnglish.detectWord(SpaceAdd.add(result)) * 100
