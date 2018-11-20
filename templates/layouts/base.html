@@ -15,6 +15,7 @@
   <!--script src="{{ url_for('static', filename='js/disableBtn.js') }}"></script-->
   <script src="{{ url_for('static', filename='js/expandTextarea.js') }}"></script>
   <script src="{{ url_for('static', filename='js/addSpaces.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/splitKey.js') }}"></script>
 
   {% block head %}
   {% endblock %}
@@ -41,7 +42,6 @@
       <div class="col">
         <div class="float-right">
           {% block splitkeyBtn %}
-          <button class="btn btn-primary" id="splitBtn" type="button">Split Key</button>
           {% endblock %}
           <button class="btn btn-primary" id="spaceBtn" type="button">Add Spaces</button>
           <button class="btn btn-primary" id="submitBtn" type="submit">Decrypt</button>

@@ -111,7 +111,7 @@ def addSpaces():
 @ciphers.route("/splitKey", methods=METHODS)
 def splitKey():
     if request.method == "POST":
-        key = PuncRem.remove(SpaceRem.remove(request.json["plain"]))
+        key = PuncRem.remove(SpaceRem.remove(request.json["key"]))
         key = ','.join([x for x in key])
         return json.dumps({"key": key})
     return "error"

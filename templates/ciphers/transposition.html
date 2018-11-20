@@ -13,13 +13,17 @@
       <textarea class="form-control" id="ciphInput" name="ciphInput" oninput="expandTextarea(this)" placeholder="Cipher Text">{{ciphText}}</textarea>
     </div>
     <div class="float-right my-2">
-      <input class="form-control" name="keylenInput" placeholder="Key Length" value={{keylen}}>
+      <input class="form-control" id="keylenInput" name="keylenInput" placeholder="Key Length" value={{keylen}}>
     </div>
     <div class="float-right mx-2 my-2">
-      <input class="form-control" name="keyInput" placeholder="Key" value={{key}}>
+      <input class="form-control" id="keyInput" name="keyInput" placeholder="Key" value={{key}}>
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block splitkeyBtn %}
+<button class="btn btn-primary" id="splitBtn" type="button">Split Key</button>
 {% endblock %}
 
 {% block footer %}
