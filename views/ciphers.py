@@ -69,10 +69,10 @@ def vigenere():
         keylen = request.form["keylenInput"]
         key = request.form["keyInput"]
 
-        result, key, _ = Vigenere.decrypt(ciphText)
+        result, key, _ = Vigenere.decrypt(ciphText, key=key, keylen=keylen)
         score = DetectEnglish.detectWord(SpaceAdd.add(result)) * 100
 
-        args = {"title": "Transposition", "ciphText": ciphText, "result": result, "score": score, "keylen": keylen, "key": key}
+        args = {"title": "Vigenere", "ciphText": ciphText, "result": result, "score": score, "keylen": keylen, "key": key}
     return render_template(f"ciphers/vigenere.html", **args)
 
 
