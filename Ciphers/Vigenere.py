@@ -119,7 +119,7 @@ def decryptUsingRepeats(ciph, factors=None):
             keystrings = []
             for i, x in enumerate(combo):
                 keystrings.append(newsubs[i][x])
-            results.append(''.join([''.join(x) for x in itertools.zip_longest(*keystrings, fillvalue="")]))
+            results.append(''.join(map(''.join, itertools.zip_longest(*keystrings, fillvalue=""))))
 
         # Test result for englishness
         result, score = DetectEnglish.getBest(results)
