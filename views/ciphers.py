@@ -106,3 +106,12 @@ def addSpaces():
         score = DetectEnglish.detectWord(plainText) * 100
         return json.dumps({"plain": plainText, "score": f"{score}% certainty"})
     return "error"
+
+
+@ciphers.route("/splitKey", methods=METHODS)
+def splitKey():
+    if request.method == "POST":
+        key = PuncRem.remove(SpaceRem.remove(request.json["plain"]))
+        key = ','.join([x for x in key])
+        return json.dumps({"key": key})
+    return "error"

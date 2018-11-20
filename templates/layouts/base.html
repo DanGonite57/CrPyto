@@ -40,6 +40,9 @@
       </div>
       <div class="col">
         <div class="float-right">
+          {% block splitkeyBtn %}
+          <button class="btn btn-primary" id="splitBtn" type="button">Split Key</button>
+          {% endblock %}
           <button class="btn btn-primary" id="spaceBtn" type="button">Add Spaces</button>
           <button class="btn btn-primary" id="submitBtn" type="submit">Decrypt</button>
         </div>
