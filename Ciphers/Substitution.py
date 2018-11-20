@@ -33,7 +33,7 @@ def decrypt(ciph):
         i += 1
     bestMap = dict(zip(key, seq))
     result = sub(ciph, bestMap)
-    return result, ciph, bestMap
+    return result, bestMap
 
 
 def decryptWithSpaces(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
@@ -135,7 +135,7 @@ def decryptWithSpaces(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
 
         i += 1
 
-    return result, score, keyMap
+    return result, keyMap
 
 
 def sub(ciph, keyMap):

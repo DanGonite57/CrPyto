@@ -31,9 +31,9 @@ def substitution():
         ciphText = PuncRem.remove(request.form["ciphInput"]).lower()
 
         if request.form.get("useSpace"):
-            result, _, vals = Substitution.decryptWithSpaces(ciphText)
+            result, vals = Substitution.decryptWithSpaces(ciphText)
         else:
-            result, _, vals = Substitution.decrypt(ciphText)
+            result, vals = Substitution.decrypt(ciphText)
         score = DetectEnglish.detectWord(SpaceAdd.add(result)) * 100
 
         args = {"title": "Substitution", "ciphText": ciphText, "result": result, "score": score, "vals": vals}
