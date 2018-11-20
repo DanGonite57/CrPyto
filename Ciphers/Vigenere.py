@@ -14,7 +14,7 @@ def decrypt(ciph, key="", keylen=0):
     if key:
         return decryptWithKey(ciph, key)
     if keylen:
-        return decryptWithKeylen(ciph, keylen)
+        return decryptWithKeylen(ciph, int(keylen))
 
     sub = {}
     for i in range(2, 26):
