@@ -60,3 +60,22 @@ def decryptWithKeylen(ciph, keylen):
     score = DetectEnglish.detect(result)
 
     return result, key, score
+
+
+def decryptWithKey(ciph, key):
+    ciph = PuncRem.remove(SpaceRem.remove(ciph.lower()))
+    key = key.split(",")
+    keylen = len(key)
+
+    sub = []
+    for i in range(keylen):
+        sub.append(ciph[i::keylen])
+
+    results = []
+    for i, x in enumerate(sub):
+        result = Caesar.sub(x, key[i])
+        results.append(result)
+    result = ''.join(map(''.join, itertools.zip_longest(*results, fillvalue="")))
+    score = DetectEnglish.detect(result)
+
+    return result, key, score
