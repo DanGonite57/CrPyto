@@ -8,8 +8,13 @@ from Processing import DetectEnglish
 ALPH = string.ascii_lowercase
 
 
-def decrypt(ciph):
+def decrypt(ciph, key="", keylen=0):
     ciph = PuncRem.remove(SpaceRem.remove(ciph.lower()))
+
+    if key:
+        return decryptWithKey(ciph, key)
+    if keylen:
+        return decryptWithKeylen(ciph, keylen)
 
     sub = {}
     for i in range(2, 26):
@@ -44,8 +49,6 @@ def decrypt(ciph):
 
 
 def decryptWithKeylen(ciph, keylen):
-    ciph = PuncRem.remove(SpaceRem.remove(ciph.lower()))
-
     sub = []
     for i in range(keylen):
         sub.append(ciph[i::keylen])
@@ -63,7 +66,6 @@ def decryptWithKeylen(ciph, keylen):
 
 
 def decryptWithKey(ciph, key):
-    ciph = PuncRem.remove(SpaceRem.remove(ciph.lower()))
     key = key.split(",")
     keylen = len(key)
 
