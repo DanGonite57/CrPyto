@@ -45,7 +45,7 @@ def decrypt(ciph, key="", keylen=0):
             bestKey = ''.join(key)
             bestResult = result
 
-    return bestResult, bestKey, bestScore
+    return bestResult, ','.join(bestKey), bestScore
 
 
 def decryptWithKeylen(ciph, keylen):
@@ -62,7 +62,7 @@ def decryptWithKeylen(ciph, keylen):
     result = ''.join(map(''.join, itertools.zip_longest(*results, fillvalue="")))
     score = DetectEnglish.detect(result)
 
-    return result, key, score
+    return result, ','.join(key), score
 
 
 def decryptWithKey(ciph, key):
@@ -80,4 +80,4 @@ def decryptWithKey(ciph, key):
     result = ''.join(map(''.join, itertools.zip_longest(*results, fillvalue="")))
     score = DetectEnglish.detect(result)
 
-    return result, key, score
+    return result, ','.join(key), score
