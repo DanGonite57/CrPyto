@@ -37,9 +37,9 @@
     {% block crackBtn %}
     <div class="form-row fixed-bottom my-2 mx-2">
       <div class="col">
-        <label id="scoreLbl">{{ score }}% certainty</label>
-      </div>
-      <div class="col">
+        <div class="float-left">
+          <label id="scoreLbl">{{ score }}% certainty</label>
+        </div>
         <div class="float-right">
           {% block splitkeyBtn %}
           {% endblock %}

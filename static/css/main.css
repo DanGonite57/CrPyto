@@ -5,3 +5,7 @@
 body {
   font-family: monospace;
 }
+
+#footerdiv {
+  z-index: 1031;
+}
