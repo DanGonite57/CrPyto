@@ -56,14 +56,3 @@ def chiSquared(text):
 
 def getLongest():
     return max(map(len, wordset))
-
-
-def getBest(options):
-    best = ""
-    bestScore = 0
-    for option in options:
-        score = detect(option)
-        if score > bestScore:
-            bestScore = score
-            best = option
-    return best, bestScore
