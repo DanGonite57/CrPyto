@@ -45,4 +45,5 @@ def __process(text, maxWord, words, poss):
 
 
 def add(text):
-    return __process(text, DetectEnglish.getLongest(), [""] * len(text), [])
+    text += "."
+    return __process(text, DetectEnglish.getLongest(), [""] * (len(text)), [])
