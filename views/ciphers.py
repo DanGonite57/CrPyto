@@ -80,7 +80,7 @@ def vigenere():
 def subInputs():
     if request.method == "POST":
         changed = request.json["name"][0]
-        newval = request.json["val"]
+        newval = request.json["val"].lower()
         if newval == "":
             newval = "_"
         ciphText = SpaceRem.remove(PuncRem.remove(request.json["ciph"])).lower()
