@@ -8,7 +8,30 @@ from Processing import DetectEnglish
 def decrypt(ciph, keylen=0, key=""):
     if not (key or keylen):
         return "", ""
-    return process(ciph, keylen=keylen, key=key)
+
+    ciph = PuncRem.remove(SpaceRem.remove(ciph))
+    text = process(ciph, keylen=keylen, key=key)
+
+    if key:
+        return decryptWithKey(text, key.split(","))
+    if keylen < 8:
+        bestResult, bestKey = decryptShortKey(text)
+    else:
+        bestResult, bestKey = decryptLongKey(text, keylen)
+    score = DetectEnglish.detect(bestResult)
+
+    text = process(ciph, keylen=len(ciph) // keylen, key=key)
+    text = ''.join(text)
+    text = process(text, keylen=keylen, key=key)
+    if keylen < 8:
+        result, key = decryptShortKey(text)
+    else:
+        result, key = decryptLongKey(text, keylen)
+    newscore = DetectEnglish.detect(result)
+    if newscore > score:
+        bestResult = result
+        bestKey = key
+    return bestResult, bestKey
 
 
 def decryptShortKey(text):
@@ -72,8 +95,6 @@ def process(ciph, **kwargs):
     if key:
         keylen = len(key.split(","))
 
-    ciph = PuncRem.remove(SpaceRem.remove(ciph))
-
     # Splice ciph into keylens
     rows = [ciph[i: i + keylen] for i in range(0, len(ciph), keylen)]
 
@@ -86,11 +107,7 @@ def process(ciph, **kwargs):
             except IndexError:
                 break
 
-    if key:
-        return decryptWithKey(text, key.split(","))
-    if keylen < 8:
-        return decryptShortKey(text)
-    return decryptLongKey(text, keylen)
+    return text
 
 
 def shuffle(columns, key):
