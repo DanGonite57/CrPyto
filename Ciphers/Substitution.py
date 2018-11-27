@@ -42,10 +42,13 @@ def decryptWithSpaces(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
     from Processing import PatternList, PatternGen
 
     ciph = PuncRem.remove(ciph).lower()
+    if not ciph:
+        return ciph, {x: "" for x in ALPH}
     patterns = PatternList.patterns()
 
     # Reformats text into list
     for cw in ciph.split(" "):
+        print("Hi", cw)
 
         # Initiates newMap
         newMap = {key: [] for key in ALPH}
