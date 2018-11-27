@@ -9,6 +9,8 @@ ALPH = string.ascii_lowercase
 
 def decrypt(ciph):
     ciph = PuncRem.remove(SpaceRem.remove(ciph)).lower()
+    if not ciph:
+        return ciph, {x: "" for x in ALPH}
 
     key = [x[0] for x in FreqAnalysis.getFrequencies(ciph) if x[0] in ALPH]
     seq = "etaoinshrdlcumwfgypbvkjxqz"
