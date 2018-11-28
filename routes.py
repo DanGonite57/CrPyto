@@ -21,7 +21,10 @@ def index():
     return render_template('index.html', title="CrPyto")
 
 
-@app.errorhandler(e)
+@app.errorhandler(403)
+@app.errorhandler(404)
+@app.errorhandler(410)
+@app.errorhandler(500)
 def error(e):
     return render_template(f"errors/{e}.html", title=e), e
 
