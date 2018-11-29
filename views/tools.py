@@ -1,4 +1,9 @@
-from flask import Blueprint, render_template, request
+import io
+import random
+
+import matplotlib.pyplot as plt
+from flask import Blueprint, Response, render_template, request
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 from Formatting import PuncRem, SpaceAdd, SpaceRem
 from Processing import DetectEnglish
@@ -10,7 +15,7 @@ tools = Blueprint("tools", __name__, url_prefix="/tools")
 def freqAnalysis():
     args = {"title": "Frequency Analysis", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
     if request.method == "POST":
-        args["ciphText"] = ciph = request.form["ciphInput"]
+        args["ciphText"] = request.form["ciphInput"]
     return render_template(f"tools/freqanalysis.html", **args)
 
 
@@ -52,3 +57,19 @@ def reverseText():
         args["result"] = plain = ciph[::-1]
         args["score"] = DetectEnglish.detectWord(SpaceAdd.add(plain)) * 100
     return render_template(f"tools/reversetext.html", **args)
+
+
+@tools.route('/freqAnalysis.png')
+def plot_png():
+    fig = createFig()
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+
+def createFig():
+    fig, ax = plt.subplots(figsize=(10, 5))
+    xs = range(1000)
+    ys = [random.randint(1, 100) for x in xs]
+    ax.plot(xs, ys)
+    return fig
