@@ -6,6 +6,14 @@ from Processing import DetectEnglish
 tools = Blueprint("tools", __name__, url_prefix="/tools")
 
 
+@tools.route("/freqanalysis.html", methods=["GET", "POST"])
+def freqAnalysis():
+    args = {"title": "Frequency Analysis", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
+    if request.method == "POST":
+        args["ciphText"] = ciph = request.form["ciphInput"]
+    return render_template(f"tools/freqanalysis.html", **args)
+
+
 @tools.route("/addspaces.html", methods=["GET", "POST"])
 def addSpaces():
     args = {"title": "Add Spaces", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
