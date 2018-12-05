@@ -68,7 +68,7 @@ def plotFreq(ciph):
 
     lettcounts = [FreqAnalysis.englishProbabilities.get(x, 0) for x in ALPH]
     ciphprobs = FreqAnalysis.getFrequencies(ciph)
-    ax.bar([x for x in map(operator.sub, range(len(lettprobs)), [barwidth / 2] * len(lettcounts))], lettcounts, width=barwidth, label="English", color="r")
+    ax.bar([x for x in map(operator.sub, range(len(lettcounts)), [barwidth / 2] * len(lettcounts))], lettcounts, width=barwidth, label="English", color="r")
     try:
         ciphcounts = [ciphprobs.get(x, 0) / len(ciph) for x in sorted(ALPH)]
         ax.bar([x for x in map(operator.add, range(len(ciphprobs)), [barwidth / 2] * len(ciphcounts))], ciphcounts, width=barwidth, label="Cipher Text", color="b")
