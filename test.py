@@ -28,4 +28,6 @@ ax.set_xticks(range(len(lettprobs)))
 ax.set_xticklabels(map(str.upper, sorted(lettprobs)))
 ax.legend()
 
+fig.savefig("static/img/freqanalysis.png")
+
 plt.show()

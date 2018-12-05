@@ -62,6 +62,7 @@ def reverseText():
     return render_template(f"tools/reversetext.html", **args)
 
 
+@tools.route("/freqanalysis.png?<ciph>")
 def plotFreq(ciph):
     fig, ax = plt.subplots(figsize=(10, 5))
     barwidth = 0.3
@@ -79,4 +80,6 @@ def plotFreq(ciph):
     ax.set_xticklabels(map(str.upper, sorted(ALPH)))
     ax.legend()
 
-    fig.savefig(url_for("static", filename="img/freqanalysis.png"))
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
