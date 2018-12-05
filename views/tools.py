@@ -68,10 +68,12 @@ def plotFreq(ciph):
 
     lettcounts = [FreqAnalysis.englishProbabilities.get(x, 0) for x in ALPH]
     ciphprobs = FreqAnalysis.getFrequencies(ciph)
-    ciphcounts = [ciphprobs.get(x, 0) / len(ciph) for x in ALPH]
-
-    ax.bar([x for x in map(operator.sub, range(len(ALPH)), [barwidth / 2] * len(lettcounts))], lettcounts, width=barwidth, label="English")
-    ax.bar([x for x in map(operator.add, range(len(ciphprobs)), [barwidth / 2] * len(ciphcounts))], ciphcounts, width=barwidth, label="Cipher Text")
+    ax.bar([x for x in map(operator.sub, range(len(lettprobs)), [barwidth / 2] * len(lettcounts))], lettcounts, width=barwidth, label="English", color="r")
+    try:
+        ciphcounts = [ciphprobs.get(x, 0) / len(ciph) for x in sorted(ALPH)]
+        ax.bar([x for x in map(operator.add, range(len(ciphprobs)), [barwidth / 2] * len(ciphcounts))], ciphcounts, width=barwidth, label="Cipher Text", color="b")
+    except ZeroDivisionError:
+        pass
     ax.get_yaxis().set_visible(False)
     ax.set_xticks(range(len(ALPH)))
     ax.set_xticklabels(map(str.upper, sorted(ALPH)))
