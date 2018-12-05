@@ -1,25 +1,28 @@
 import io
-import random
+import operator
+from string import ascii_lowercase as ALPH
 
 import matplotlib.pyplot as plt
-from flask import Blueprint, Response, render_template, request
+from flask import Blueprint, Response, render_template, request, url_for
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 from Formatting import PuncRem, SpaceAdd, SpaceRem
-from Processing import DetectEnglish
+from Processing import DetectEnglish, FreqAnalysis
 
 tools = Blueprint("tools", __name__, url_prefix="/tools")
 
+methods = ["GET", "POST"]
 
-@tools.route("/freqanalysis.html", methods=["GET", "POST"])
+@tools.route("/freqanalysis.html", methods=methods)
 def freqAnalysis():
     args = {"title": "Frequency Analysis", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
     if request.method == "POST":
         args["ciphText"] = request.form["ciphInput"]
+    plotFreq(args["ciphText"])
     return render_template(f"tools/freqanalysis.html", **args)
 
 
-@tools.route("/addspaces.html", methods=["GET", "POST"])
+@tools.route("/addspaces.html", methods=methods)
 def addSpaces():
     args = {"title": "Add Spaces", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
     if request.method == "POST":
@@ -29,7 +32,7 @@ def addSpaces():
     return render_template(f"tools/addspaces.html", **args)
 
 
-@tools.route("/removespaces.html", methods=["GET", "POST"])
+@tools.route("/removespaces.html", methods=methods)
 def removeSpaces():
     args = {"title": "Remove Spaces", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
     if request.method == "POST":
@@ -39,7 +42,7 @@ def removeSpaces():
     return render_template(f"tools/removespaces.html", **args)
 
 
-@tools.route("/removepunctuation.html", methods=["GET", "POST"])
+@tools.route("/removepunctuation.html", methods=methods)
 def removePunctuation():
     args = {"title": "Remove Punctuation", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
     if request.method == "POST":
@@ -49,7 +52,7 @@ def removePunctuation():
     return render_template(f"tools/removepunctuation.html", **args)
 
 
-@tools.route("/reversetext.html", methods=["GET", "POST"])
+@tools.route("/reversetext.html", methods=methods)
 def reverseText():
     args = {"title": "Reverse Text", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
     if request.method == "POST":
@@ -59,17 +62,19 @@ def reverseText():
     return render_template(f"tools/reversetext.html", **args)
 
 
-@tools.route('/freqAnalysis.png')
-def plot_png():
-    fig = createFig()
-    output = io.BytesIO()
-    FigureCanvas(fig).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
-
-
-def createFig():
+def plotFreq(ciph):
     fig, ax = plt.subplots(figsize=(10, 5))
-    xs = range(1000)
-    ys = [random.randint(1, 100) for x in xs]
-    ax.plot(xs, ys)
-    return fig
+    barwidth = 0.3
+
+    lettcounts = [FreqAnalysis.englishProbabilities.get(x, 0) for x in ALPH]
+    ciphprobs = FreqAnalysis.getFrequencies(ciph)
+    ciphcounts = [ciphprobs.get(x, 0) / len(ciph) for x in ALPH]
+
+    ax.bar([x for x in map(operator.sub, range(len(ALPH)), [barwidth / 2] * len(lettcounts))], lettcounts, width=barwidth, label="English")
+    ax.bar([x for x in map(operator.add, range(len(ciphprobs)), [barwidth / 2] * len(ciphcounts))], ciphcounts, width=barwidth, label="Cipher Text")
+    ax.get_yaxis().set_visible(False)
+    ax.set_xticks(range(len(ALPH)))
+    ax.set_xticklabels(map(str.upper, sorted(ALPH)))
+    ax.legend()
+
+    fig.savefig(url_for("static", filename="img/freqanalysis.png"))
