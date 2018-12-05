@@ -1,8 +1,6 @@
-import string
+from string import ascii_lowercase as ALPH
 
 from Processing import DetectEnglish
-
-ALPH = string.ascii_lowercase
 
 
 def decrypt(ciph):

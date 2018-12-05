@@ -1,10 +1,8 @@
 import random
-import string
+from string import ascii_lowercase as ALPH
 
 from Formatting import PuncRem, SpaceRem
 from Processing import DetectEnglish, FreqAnalysis
-
-ALPH = string.ascii_lowercase
 
 
 def decrypt(ciph):

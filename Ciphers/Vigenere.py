@@ -1,11 +1,9 @@
 import itertools
-import string
+from string import ascii_lowercase as ALPH
 
 from Ciphers import Caesar
 from Formatting import PuncRem, SpaceRem
 from Processing import DetectEnglish
-
-ALPH = string.ascii_lowercase
 
 
 def decrypt(ciph, key="", keylen=0):
