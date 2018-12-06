@@ -64,10 +64,11 @@ def reverseText():
 
 @tools.route("/freqanalysis.png?<ciph>")
 def plotFreq(ciph):
+    ciph = SpaceRem.remove(PuncRem.remove(ciph.lower()))
     fig, ax = plt.subplots(figsize=(10, 5))
     barwidth = 0.3
 
-    lettcounts = [FreqAnalysis.englishProbabilities.get(x, 0) for x in sorted(ALPH)]
+    lettcounts = [FreqAnalysis.englishProbabilities.get(x, 0) for x in ALPH]
     ciphprobs = FreqAnalysis.getFrequencies(ciph)
 
     lettplot = []
@@ -75,7 +76,7 @@ def plotFreq(ciph):
         lettplot.append(x - (barwidth / 2))
     ax.bar(lettplot, lettcounts, width=barwidth, label="English", color="r")
     try:
-        ciphcounts = [ciphprobs.get(x, 0) / len(ciph) for x in sorted(ALPH)]
+        ciphcounts = [ciphprobs.get(x, 0) / len(ciph) for x in ALPH]
         ciphplot = []
         for x in range(26):
             ciphplot.append(x + (barwidth / 2))
