@@ -1,11 +1,6 @@
-{% extends "layouts/base.html" %}
+{% extends "layouts/error.html" %}
 
-{% block title %}Page Not Found{% endblock %}
-
-{% block body %}
-<div class="container-fluid mx-2 my-2">
-  <p>Page Not Found.</p>
-  <p>These are not the words you're looking for.</p>
-  <p><a href="{{ url_for('index') }}">Take the path more travelled by.</a></p>
-</div>
+{% block message %}
+<p>These are not the words you're looking for.</p>
+<p><a href="{{ url_for('index') }}">Take the path more travelled by.</a></p>
 {% endblock %}
