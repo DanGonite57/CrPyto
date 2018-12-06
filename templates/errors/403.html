@@ -1,11 +1,6 @@
-{% extends "layouts/base.html" %}
+{% extends "layouts/error.html" %}
 
-{% block title %}Access Forbidden{% endblock %}
-
-{% block body %}
-<div class="container-fluid mx-2 my-2">
-  <p>Access Forbidden.</p>
-  <p>Nice job, you managed to find this page.</p>
-  <p><a href="{{ url_for('index') }}">Go here for the next clue.</a></p>
-</div>
+{% block message %}
+<p>Nice job, you managed to find this page.</p>
+<p><a href="{{ url_for('index') }}">Go here for the next clue.</a></p>
 {% endblock %}
