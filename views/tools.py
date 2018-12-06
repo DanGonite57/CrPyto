@@ -67,17 +67,24 @@ def plotFreq(ciph):
     fig, ax = plt.subplots(figsize=(10, 5))
     barwidth = 0.3
 
-    lettcounts = [FreqAnalysis.englishProbabilities.get(x, 0) for x in ALPH]
+    lettcounts = [FreqAnalysis.englishProbabilities.get(x, 0) for x in sorted(ALPH)]
     ciphprobs = FreqAnalysis.getFrequencies(ciph)
-    ax.bar([x for x in map(operator.sub, range(len(lettcounts)), [barwidth / 2] * len(lettcounts))], lettcounts, width=barwidth, label="English", color="r")
+
+    lettplot = []
+    for x in range(26):
+        lettplot.append(x - (barwidth / 2))
+    ax.bar(lettplot, lettcounts, width=barwidth, label="English", color="r")
     try:
         ciphcounts = [ciphprobs.get(x, 0) / len(ciph) for x in sorted(ALPH)]
-        ax.bar([x for x in map(operator.add, range(len(ciphprobs)), [barwidth / 2] * len(ciphcounts))], ciphcounts, width=barwidth, label="Cipher Text", color="b")
+        ciphplot = []
+        for x in range(26):
+            ciphplot.append(x + (barwidth / 2))
+        ax.bar(ciphplot, ciphcounts, width=barwidth, label="Cipher Text", color="b")
     except ZeroDivisionError:
         pass
     ax.get_yaxis().set_visible(False)
-    ax.set_xticks(range(len(ALPH)))
-    ax.set_xticklabels(map(str.upper, sorted(ALPH)))
+    ax.set_xticks(range(26))
+    ax.set_xticklabels(ALPH.upper())
     ax.legend()
 
     output = io.BytesIO()
