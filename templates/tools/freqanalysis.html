@@ -1,0 +1,25 @@
+{% extends "layouts/base.html" %}
+
+{% block ciphForm %}
+{{ super() }}
+<div class="form-row">
+  <div class="col">
+    <div class="form-group">
+      <textarea class="form-control" id="ciphInput" name="ciphInput" oninput="expandTextarea(this)" placeholder="Cipher Text">{{ciphText}}</textarea>
+    </div>
+  </div>
+</div>
+<div class="form-row">
+  <div class="col">
+    <div class="text-center">
+      <img src="{{ url_for('tools.plotFreq', ciph=ciphText) }}" alt="Frequency Analysis Plot" class="img-fluid">
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript">
+  expandTextarea(document.getElementById("ciphInput"));
+</script>
+{% endblock %}
