@@ -17,7 +17,7 @@
     <button class="btn btn-secondary dropdown-toggle" id="ciphsDrop" role="button" data-toggle="dropdown" aria-haspopup="true"
       aria-expanded="false">Ciphers</button>
     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-      <a class="dropdown-item" href="auto.html">AutoCrack</a>
+      <a class="dropdown-item" href="{{ url_for('ciphers.auto') }}">AutoCrack</a>
       <div class="dropdown-divider"></div>
       {% for cipher in ciphers %}
       <a class="dropdown-item" href="{{ url_for('ciphers.'+cipher) }}">{{ cipher.capitalize() }}</a>

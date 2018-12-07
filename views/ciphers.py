@@ -1,4 +1,4 @@
-from flask import Blueprint, json, render_template, request
+from flask import Blueprint, abort, json, render_template, request
 
 from Formatting import PuncRem, SpaceAdd, SpaceRem
 from Processing import DetectEnglish
@@ -6,6 +6,11 @@ from Processing import DetectEnglish
 ciphers = Blueprint("ciphers", __name__, url_prefix="/ciphers")
 
 METHODS = ["GET", "POST"]
+
+
+@ciphers.route("/auto.html")
+def auto():
+    abort(501)
 
 
 @ciphers.route("/caesar.html", methods=METHODS)
