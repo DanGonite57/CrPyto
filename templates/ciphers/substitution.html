@@ -44,10 +44,10 @@
     {{ super() }}
     <div class="col-9">
       <div class="form-group">
-        <textarea class="form-control" id="plainInput" name="plainInput" oninput="expandTextarea(this)" placeholder="Plain Text">{{result}}</textarea>
+        <textarea class="form-control" id="plainInput" name="plainInput" oninput="expandTextarea(this)" placeholder="Plain Text">{{ result }}</textarea>
       </div>
       <div class="form-group">
-        <textarea class="form-control" id="ciphInput" name="ciphInput" oninput="expandTextarea(this)" placeholder="Cipher Text">{{ciphText}}</textarea>
+        <textarea class="form-control" id="ciphInput" name="ciphInput" oninput="expandTextarea(this)" placeholder="Cipher Text">{{ ciphText }}</textarea>
       </div>
     </div>
     {% endblock %}
