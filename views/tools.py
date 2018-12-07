@@ -22,34 +22,10 @@ def freqAnalysis():
     return render_template(f"tools/freqanalysis.html", **args)
 
 
-@tools.route("/addspaces.html", methods=methods)
-def addSpaces():
+@tools.route("/formatting.html", methods=methods)
+def formatting():
     args = {"title": "Add Spaces", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
-    if request.method == "POST":
-        args["ciphText"] = ciph = request.form["ciphInput"]
-        args["result"] = plain = SpaceAdd.add(ciph)
-        args["score"] = DetectEnglish.detectWord(plain) * 100
-    return render_template(f"tools/addspaces.html", **args)
-
-
-@tools.route("/removespaces.html", methods=methods)
-def removeSpaces():
-    args = {"title": "Remove Spaces", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
-    if request.method == "POST":
-        args["ciphText"] = ciph = request.form["ciphInput"]
-        args["result"] = plain = SpaceRem.remove(ciph)
-        args["score"] = DetectEnglish.detectWord(SpaceAdd.add(plain)) * 100
-    return render_template(f"tools/removespaces.html", **args)
-
-
-@tools.route("/removepunctuation.html", methods=methods)
-def removePunctuation():
-    args = {"title": "Remove Punctuation", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
-    if request.method == "POST":
-        args["ciphText"] = ciph = request.form["ciphInput"]
-        args["result"] = plain = PuncRem.remove(ciph)
-        args["score"] = DetectEnglish.detectWord(SpaceAdd.add(plain)) * 100
-    return render_template(f"tools/removepunctuation.html", **args)
+    return render_template(f"tools/formatting.html", **args)
 
 
 @tools.route("/reversetext.html", methods=methods)

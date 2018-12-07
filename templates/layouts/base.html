@@ -40,12 +40,14 @@
         <div class="float-left">
           <label id="scoreLbl">{{ score }}% certainty</label>
         </div>
+        {% block btns %}
         <div class="float-right">
-          {% block splitkeyBtn %}
+          {% block extraBtn %}
           {% endblock %}
           <button class="btn btn-primary" id="spaceBtn" type="button">Add Spaces</button>
           <button class="btn btn-primary" id="submitBtn" type="submit">Decrypt</button>
         </div>
+        {% endblock %}
       </div>
     </div>
     {% endblock %}
