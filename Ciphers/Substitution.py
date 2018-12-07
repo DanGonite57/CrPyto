@@ -46,7 +46,6 @@ def decryptWithSpaces(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
 
     # Reformats text into list
     for cw in ciph.split(" "):
-        print("Hi", cw)
 
         # Initiates newMap
         newMap = {key: [] for key in ALPH}
