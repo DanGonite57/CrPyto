@@ -1,9 +1,8 @@
 import io
-import operator
 from string import ascii_lowercase as ALPH
 
-import matplotlib.pyplot as plt
-from flask import Blueprint, Response, render_template, request, url_for
+from flask import Blueprint, Response, json, render_template, request
+from matplotlib import pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 from Formatting import PuncRem, SpaceAdd, SpaceRem
@@ -11,9 +10,10 @@ from Processing import DetectEnglish, FreqAnalysis
 
 tools = Blueprint("tools", __name__, url_prefix="/tools")
 
-methods = ["GET", "POST"]
+METHODS = ["GET", "POST"]
 
-@tools.route("/freqanalysis.html", methods=methods)
+
+@tools.route("/freqanalysis.html", methods=METHODS)
 def freqAnalysis():
     args = {"title": "Frequency Analysis", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
     if request.method == "POST":
@@ -22,37 +22,7 @@ def freqAnalysis():
     return render_template(f"tools/freqanalysis.html", **args)
 
 
-@tools.route("/addspaces.html", methods=methods)
-def addSpaces():
-    args = {"title": "Add Spaces", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
-    if request.method == "POST":
-        args["ciphText"] = ciph = request.form["ciphInput"]
-        args["result"] = plain = SpaceAdd.add(ciph)
-        args["score"] = DetectEnglish.detectWord(plain) * 100
-    return render_template(f"tools/addspaces.html", **args)
-
-
-@tools.route("/removespaces.html", methods=methods)
-def removeSpaces():
-    args = {"title": "Remove Spaces", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
-    if request.method == "POST":
-        args["ciphText"] = ciph = request.form["ciphInput"]
-        args["result"] = plain = SpaceRem.remove(ciph)
-        args["score"] = DetectEnglish.detectWord(SpaceAdd.add(plain)) * 100
-    return render_template(f"tools/removespaces.html", **args)
-
-
-@tools.route("/removepunctuation.html", methods=methods)
-def removePunctuation():
-    args = {"title": "Remove Punctuation", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
-    if request.method == "POST":
-        args["ciphText"] = ciph = request.form["ciphInput"]
-        args["result"] = plain = PuncRem.remove(ciph)
-        args["score"] = DetectEnglish.detectWord(SpaceAdd.add(plain)) * 100
-    return render_template(f"tools/removepunctuation.html", **args)
-
-
-@tools.route("/reversetext.html", methods=methods)
+@tools.route("/reversetext.html", methods=METHODS)
 def reverseText():
     args = {"title": "Reverse Text", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
     if request.method == "POST":
@@ -60,6 +30,42 @@ def reverseText():
         args["result"] = plain = ciph[::-1]
         args["score"] = DetectEnglish.detectWord(SpaceAdd.add(plain)) * 100
     return render_template(f"tools/reversetext.html", **args)
+
+
+@tools.route("/formatting.html", methods=METHODS)
+def formatting():
+    args = {"title": "Formatting", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
+    return render_template(f"tools/formatting.html", **args)
+
+
+@tools.route("/addSpaces", methods=METHODS)
+def addSpaces():
+    if request.method == "POST":
+        plainText = SpaceRem.remove(request.json["plain"])
+        plainText = SpaceAdd.add(plainText)
+        score = DetectEnglish.detectWord(plainText) * 100
+        return json.dumps({"plain": plainText, "score": f"{score}% certainty"})
+    return "error"
+
+
+@tools.route("/remSpaces", methods=METHODS)
+def remSpaces():
+    if request.method == "POST":
+        plainText = SpaceRem.remove(request.json["plain"])
+        text = SpaceAdd.add(plainText)
+        score = DetectEnglish.detectWord(text) * 100
+        return json.dumps({"plain": plainText, "score": f"{score}% certainty"})
+    return "error"
+
+
+@tools.route("/remPunc", methods=METHODS)
+def remPunc():
+    if request.method == "POST":
+        plainText = PuncRem.remove(request.json["plain"])
+        text = SpaceAdd.add(plainText)
+        score = DetectEnglish.detectWord(text) * 100
+        return json.dumps({"plain": plainText, "score": f"{score}% certainty"})
+    return "error"
 
 
 @tools.route("/freqanalysis.png?<ciph>")
