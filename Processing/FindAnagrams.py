@@ -12,5 +12,6 @@ def find(word):
     for x in wordset:
         if sorted(x) == pattern:
             anagrams.append(x)
+    anagrams.sort()
 
     return anagrams
