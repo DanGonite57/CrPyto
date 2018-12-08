@@ -15,10 +15,10 @@ METHODS = ["GET", "POST"]
 
 @tools.route("/findanagrams.html", methods=METHODS)
 def findAnagrams():
-    args = {"title": "Find Anagrams", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
+    args = {"title": "Find Anagrams", "ciphText": "", "result": ""}
     if request.method == "POST":
         args["ciphText"] = word = request.form["ciphInput"]
-        args["plainText"] = "\n".join(FindAnagrams.find(word))
+        args["result"] = "\n".join(FindAnagrams.find(word))
     return render_template(f"tools/findanagrams.html", **args)
 
 
