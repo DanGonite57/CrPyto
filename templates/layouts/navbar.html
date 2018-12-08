@@ -6,8 +6,9 @@
     <button class="btn btn-secondary dropdown-toggle" id="toolsDrop" role="button" data-toggle="dropdown" aria-haspopup="true"
       aria-expanded="false">Tools</button>
     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-      <a class="dropdown-item" href="{{ url_for('tools.freqAnalysis') }}">Frequency Analysis</a>
+      <a class="dropdown-item" href="{{ url_for('tools.findAnagrams') }}">Find Anagrams</a>
       <a class="dropdown-item" href="{{ url_for('tools.formatting') }}">Formatting</a>
+      <a class="dropdown-item" href="{{ url_for('tools.freqAnalysis') }}">Frequency Analysis</a>
       <a class="dropdown-item" href="{{ url_for('tools.reverseText') }}">Reverse Text</a>
     </div>
   </div>
