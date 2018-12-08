@@ -6,11 +6,20 @@ from matplotlib import pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 from Formatting import PuncRem, SpaceAdd, SpaceRem
-from Processing import DetectEnglish, FreqAnalysis
+from Processing import DetectEnglish, FindAnagrams, FreqAnalysis
 
 tools = Blueprint("tools", __name__, url_prefix="/tools")
 
 METHODS = ["GET", "POST"]
+
+
+@tools.route("/findanagrams.html", methods=METHODS)
+def findAnagrams():
+    args = {"title": "Find Anagrams", "ciphText": "", "result": ""}
+    if request.method == "POST":
+        args["ciphText"] = word = request.form["ciphInput"]
+        args["result"] = "\n".join(FindAnagrams.find(word))
+    return render_template(f"tools/findanagrams.html", **args)
 
 
 @tools.route("/freqanalysis.html", methods=METHODS)
