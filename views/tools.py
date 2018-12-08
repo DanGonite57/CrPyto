@@ -15,16 +15,17 @@ METHODS = ["GET", "POST"]
 
 @tools.route("/freqanalysis.html", methods=METHODS)
 def freqAnalysis():
-    args = {"title": "Frequency Analysis", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
+    args = {"title": "Frequency Analysis", "ciphText": "", "score": 0}
     if request.method == "POST":
-        args["ciphText"] = request.form["ciphInput"]
+        args["ciphText"] = ciph = request.form["ciphInput"]
+        args["score"] = DetectEnglish.detectWord(SpaceAdd.add(ciph)) * 100
     plotFreq(args["ciphText"])
     return render_template(f"tools/freqanalysis.html", **args)
 
 
 @tools.route("/reversetext.html", methods=METHODS)
 def reverseText():
-    args = {"title": "Reverse Text", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
+    args = {"title": "Reverse Text", "ciphText": "", "result": "", "score": 0}
     if request.method == "POST":
         args["ciphText"] = ciph = request.form["ciphInput"]
         args["result"] = plain = ciph[::-1]
@@ -34,7 +35,7 @@ def reverseText():
 
 @tools.route("/formatting.html", methods=METHODS)
 def formatting():
-    args = {"title": "Formatting", "ciphText": "", "result": "", "score": 0, "vals": {}, "keylen": ""}
+    args = {"title": "Formatting"}
     return render_template(f"tools/formatting.html", **args)
 
 
