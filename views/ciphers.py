@@ -1,5 +1,6 @@
 from flask import Blueprint, abort, json, render_template, request
 
+import Ciphers
 from Formatting import PuncRem, SpaceAdd, SpaceRem
 from Processing import DetectEnglish
 
@@ -13,8 +14,40 @@ def auto():
     abort(501)
 
 
+@ciphers.route("/decrypt", methods=METHODS)
+def decrypt():
+    ciphs = {"caesar": caesar, "substitution": substitution, "transposition": transposition, "vigenere": vigenere}
+    ciph = ciphs.get(ciph)
+    args = ciph(ciphText)
+    return render_template(f"ciphers/{ciph}.html", **args)
+
+
+def caesar(ciph):
+    from Ciphers import Caesar
+
+    ciphText = ciph.lower()
+    result, _ = Caesar.decrypt(ciphText)
+    score = DetectEnglish.detect(SpaceAdd.add(result)) * 100
+
+    args = {"title": "Caesar", "ciphText": ciphText, "result": result, "score": score}
+
+    return args
+
+
+def substitution():
+
+
+
+def transposition():
+
+
+def vigenere():
+
+
+
+
 @ciphers.route("/caesar.html", methods=METHODS)
-def caesar():
+def caesarPage():
     args = {"title": "Caesar", "ciphText": "", "result": "", "score": 0}
     if request.method == "POST":
         from Ciphers import Caesar
@@ -28,7 +61,7 @@ def caesar():
 
 
 @ciphers.route("/substitution.html", methods=METHODS)
-def substitution():
+def substitutionPage():
     args = {"title": "Substitution", "ciphText": "", "result": "", "score": 0, "vals": {}}
     if request.method == "POST":
         from Ciphers import Substitution
@@ -46,7 +79,7 @@ def substitution():
 
 
 @ciphers.route("/transposition.html", methods=METHODS)
-def transposition():
+def transpositionPage():
     args = {"title": "Transposition", "ciphText": "", "result": "", "score": 0, "keylen": "", "key": ""}
     if request.method == "POST":
         from Ciphers import Transposition
@@ -65,7 +98,7 @@ def transposition():
 
 
 @ciphers.route("/vigenere.html", methods=METHODS)
-def vigenere():
+def vigenerePage():
     args = {"title": "Vigenere", "ciphText": "", "result": "", "score": 0, "keylen": "", "key": ""}
     if request.method == "POST":
         from Ciphers import Vigenere
