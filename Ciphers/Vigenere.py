@@ -78,3 +78,50 @@ def decryptWithKey(ciph, key):
     score = DetectEnglish.detect(result)
 
     return result, ','.join(key), score
+
+def decryptWithSubstitution(ciph):
+    seq = "etaoinshrdlcumwfgypbvkjxqz"
+
+    ciph = PuncRem.remove(SpaceRem.remove(ciph))
+    ciph = Vigenere.decrypt(ciph, key="b,o,e,j,l,k,g")[0]
+
+    subs = []
+    for x in range(0, 7):
+        substring = ciph[x::7]
+        key = [y[0] for y in collections.Counter(substring).most_common() if y[0] in ALPH]
+        subs.append((substring, key))
+
+    i = 0
+    bestScore = 0
+    result = []
+    for sub in subs:
+        keyMap = dict(zip(sub[1], seq))
+        result.append(Substitution.sub(sub[0], keyMap))
+    result = ''.join(''.join(b) for b in zip(*result))
+    bestScore = DetectEnglish.detect(result) * DetectEnglish.detectWord(addSpace(text, result))
+
+    while i < 10000:
+        x = random.randint(0, len(subs) - 1)
+        y = random.randint(2, len(subs[x][1]) - 1)
+        z = random.randint(2, len(subs[x][1]) - 1)
+        subs[x][1][y], subs[x][1][z] = subs[x][1][z], subs[x][1][y]
+        result = []
+        for sub in subs:
+            keyMap = dict(zip(sub[1], seq))
+            result.append(Substitution.sub(sub[0], keyMap))
+        result = ''.join(''.join(b) for b in zip(*result))
+        score = DetectEnglish.detect(result) * DetectEnglish.detectWord(addSpace(text, result))
+        if score > bestScore:
+            bestScore = score
+            i = 0
+        else:
+            subs[x][1][y], subs[x][1][z] = subs[x][1][z], subs[x][1][y]
+        i += 1
+
+    result = []
+    for sub in subs:
+        keyMap = dict(zip(sub[1], seq))
+        result.append(Substitution.sub(sub[0], keyMap))
+    result = ''.join(''.join(b) for b in zip(*result))
+
+    return result
