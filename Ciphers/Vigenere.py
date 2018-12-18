@@ -1,6 +1,8 @@
+import collections
 import itertools
+import random
 
-from Ciphers import Caesar
+from Ciphers import Caesar, Substitution
 from Formatting import PuncRem, SpaceRem
 from Processing import DetectEnglish
 
@@ -79,11 +81,11 @@ def decryptWithKey(ciph, key):
 
     return result, ','.join(key), score
 
+
 def decryptWithSubstitution(ciph):
     seq = "etaoinshrdlcumwfgypbvkjxqz"
 
     ciph = PuncRem.remove(SpaceRem.remove(ciph))
-    ciph = Vigenere.decrypt(ciph, key="b,o,e,j,l,k,g")[0]
 
     subs = []
     for x in range(0, 7):
@@ -98,7 +100,7 @@ def decryptWithSubstitution(ciph):
         keyMap = dict(zip(sub[1], seq))
         result.append(Substitution.sub(sub[0], keyMap))
     result = ''.join(''.join(b) for b in zip(*result))
-    bestScore = DetectEnglish.detect(result) * DetectEnglish.detectWord(addSpace(text, result))
+    bestScore = DetectEnglish.detect(result)  # * DetectEnglish.detectWord(addSpace(text, result))
 
     while i < 10000:
         x = random.randint(0, len(subs) - 1)
@@ -110,7 +112,7 @@ def decryptWithSubstitution(ciph):
             keyMap = dict(zip(sub[1], seq))
             result.append(Substitution.sub(sub[0], keyMap))
         result = ''.join(''.join(b) for b in zip(*result))
-        score = DetectEnglish.detect(result) * DetectEnglish.detectWord(addSpace(text, result))
+        score = DetectEnglish.detect(result)  # * DetectEnglish.detectWord(addSpace(text, result))
         if score > bestScore:
             bestScore = score
             i = 0
