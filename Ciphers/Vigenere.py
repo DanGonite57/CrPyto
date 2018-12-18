@@ -1,5 +1,4 @@
 import itertools
-from string import ascii_lowercase as ALPH
 
 from Ciphers import Caesar
 from Formatting import PuncRem, SpaceRem
