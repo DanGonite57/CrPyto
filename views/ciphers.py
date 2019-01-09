@@ -1,6 +1,9 @@
+from string import punctuation as PUNC
+from string import whitespace as SPACE
+
 from flask import Blueprint, abort, json, render_template, request
 
-from Formatting import PuncRem, SpaceAdd, SpaceRem
+from Formatting import Format, SpaceAdd
 from Processing import DetectEnglish
 
 ciphers = Blueprint("ciphers", __name__, url_prefix="/ciphers")
@@ -33,7 +36,7 @@ def substitution():
     if request.method == "POST":
         from Ciphers import Substitution
 
-        ciphText = PuncRem.remove(request.form["ciphInput"]).lower()
+        ciphText = Format.remove(request.form["ciphInput"], PUNC).lower()
 
         if request.form.get("useSpace"):
             result, vals = Substitution.decryptWithSpaces(ciphText)
@@ -51,7 +54,7 @@ def transposition():
     if request.method == "POST":
         from Ciphers import Transposition
 
-        ciphText = PuncRem.remove(request.form["ciphInput"]).lower()
+        ciphText = Format.remove(request.form["ciphInput"], PUNC).lower()
         keylen = int(request.form["keylenInput"] or 0)
         key = request.form["keyInput"]
 
@@ -88,8 +91,8 @@ def subInputs():
         newval = request.json["val"].lower()
         if newval == "":
             newval = "_"
-        ciphText = SpaceRem.remove(PuncRem.remove(request.json["ciph"])).lower()
-        plainText = SpaceRem.remove(request.json["plain"].lower())
+        ciphText = Format.remove(request.json["ciph"], PUNC, SPACE).lower()
+        plainText = Format.remove(request.json["plain"], SPACE).lower()
         if plainText == "":
             new = ''.join([newval if x in changed else "_" for x in ciphText])
         else:
@@ -106,7 +109,7 @@ def subInputs():
 @ciphers.route("/addSpaces", methods=METHODS)
 def addSpaces():
     if request.method == "POST":
-        plainText = SpaceRem.remove(request.json["plain"])
+        plainText = Format.remove(request.json["plain"], SPACE)
         plainText = SpaceAdd.add(plainText)
         score = DetectEnglish.detectWord(plainText) * 100
         return json.dumps({"plain": plainText, "score": f"{score}% certainty"})
@@ -116,7 +119,7 @@ def addSpaces():
 @ciphers.route("/splitKey", methods=METHODS)
 def splitKey():
     if request.method == "POST":
-        key = PuncRem.remove(SpaceRem.remove(request.json["key"]))
+        key = Format.remove(request.json["key"], PUNC, SPACE)
         key = ','.join([x for x in key])
         return json.dumps({"key": key})
     return "error"

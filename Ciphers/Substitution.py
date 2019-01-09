@@ -1,12 +1,14 @@
 import random
 from string import ascii_lowercase as ALPH
+from string import punctuation as PUNC
+from string import whitespace as SPACE
 
-from Formatting import PuncRem, SpaceRem
+from Formatting import Format
 from Processing import DetectEnglish, FreqAnalysis
 
 
 def decrypt(ciph):
-    ciph = PuncRem.remove(SpaceRem.remove(ciph)).lower()
+    ciph = Format.remove(ciph, PUNC, SPACE).lower()
     if not ciph:
         return ciph, {x: "" for x in ALPH}
 
@@ -39,7 +41,7 @@ def decrypt(ciph):
 def decryptWithSpaces(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
     from Processing import PatternList, PatternGen
 
-    ciph = PuncRem.remove(ciph).lower()
+    ciph = Format.remove(ciph, PUNC).lower()
     if not ciph:
         return ciph, {x: "" for x in ALPH}
     patterns = PatternList.patterns()

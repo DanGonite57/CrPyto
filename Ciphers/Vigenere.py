@@ -1,12 +1,14 @@
 import itertools
+from string import punctuation as PUNC
+from string import whitespace as SPACE
 
 from Ciphers import Caesar
-from Formatting import PuncRem, SpaceRem
+from Formatting import Format
 from Processing import DetectEnglish
 
 
 def decrypt(ciph, key="", keylen=0):
-    ciph = PuncRem.remove(SpaceRem.remove(ciph.lower()))
+    ciph = Format.remove(ciph, PUNC, SPACE).lower()
 
     if key:
         return decryptWithKey(ciph, key)

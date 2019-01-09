@@ -1,7 +1,9 @@
 import itertools
 import random
+from string import punctuation as PUNC
+from string import whitespace as SPACE
 
-from Formatting import PuncRem, SpaceRem
+from Formatting import Format
 from Processing import DetectEnglish
 
 
@@ -9,7 +11,7 @@ def decrypt(ciph, keylen=0, key=""):
     if not (key or keylen):
         return "", ""
 
-    ciph = PuncRem.remove(SpaceRem.remove(ciph))
+    ciph = Format.remove(ciph, PUNC, SPACE)
     text = process(ciph, keylen=keylen, key=key)
 
     if key:

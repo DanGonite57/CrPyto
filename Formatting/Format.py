@@ -1,7 +1,10 @@
 from string import ascii_letters as ALPH
 
 
-def remove(text, chars):
+def remove(text, *args):
+    chars = ""
+    for x in args:
+        chars += x
     for char in chars:
         text = text.replace(char, "")
     return text

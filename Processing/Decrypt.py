@@ -1,8 +1,8 @@
 import Ciphers
-from Formatting import PuncRem
+from Formatting import Format
 
 
 def decrypt(ciph, cipher):
-    ciph = PuncRem.remove(ciph)
+    ciph = Format.remove(ciph)
     result, score = eval("Ciphers." + cipher.capitalize()).decrypt(ciph)
     return result, score
