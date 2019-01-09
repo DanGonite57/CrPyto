@@ -1,11 +1,14 @@
 import io
 from string import ascii_lowercase as ALPH
+from string import digits as NUMS
+from string import punctuation as PUNC
+from string import whitespace as SPACE
 
 from flask import Blueprint, Response, json, render_template, request
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
-from Formatting import PuncRem, SpaceAdd, SpaceRem
+from Formatting import Format, SpaceAdd
 from Processing import DetectEnglish, FindAnagrams, FreqAnalysis
 
 tools = Blueprint("tools", __name__, url_prefix="/tools")
@@ -51,7 +54,7 @@ def formatting():
 @tools.route("/addSpaces", methods=METHODS)
 def addSpaces():
     if request.method == "POST":
-        plainText = SpaceRem.remove(request.json["plain"])
+        plainText = Format.remove(request.json["plain"], SPACE)
         plainText = SpaceAdd.add(plainText)
         score = DetectEnglish.detectWord(plainText) * 100
         return json.dumps({"plain": plainText, "score": f"{score}% certainty"})
@@ -61,7 +64,7 @@ def addSpaces():
 @tools.route("/remSpaces", methods=METHODS)
 def remSpaces():
     if request.method == "POST":
-        plainText = SpaceRem.remove(request.json["plain"])
+        plainText = Format.remove(request.json["plain"], SPACE)
         text = SpaceAdd.add(plainText)
         score = DetectEnglish.detectWord(text) * 100
         return json.dumps({"plain": plainText, "score": f"{score}% certainty"})
@@ -71,7 +74,7 @@ def remSpaces():
 @tools.route("/remPunc", methods=METHODS)
 def remPunc():
     if request.method == "POST":
-        plainText = PuncRem.remove(request.json["plain"])
+        plainText = Format.remove(request.json["plain"], PUNC)
         text = SpaceAdd.add(plainText)
         score = DetectEnglish.detectWord(text) * 100
         return json.dumps({"plain": plainText, "score": f"{score}% certainty"})
@@ -80,7 +83,7 @@ def remPunc():
 
 @tools.route("/freqanalysis.png?<ciph>")
 def plotFreq(ciph):
-    ciph = SpaceRem.remove(PuncRem.remove(ciph.lower()))
+    ciph = Format.remove(ciph, NUMS, PUNC, SPACE).lower()
     fig, ax = plt.subplots(figsize=(10, 5))
     barwidth = 0.3
 

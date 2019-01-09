@@ -1,12 +1,15 @@
 import random
 from string import ascii_lowercase as ALPH
+from string import digits as NUMS
+from string import punctuation as PUNC
+from string import whitespace as SPACE
 
-from Formatting import PuncRem, SpaceRem
+from Formatting import Format
 from Processing import DetectEnglish, FreqAnalysis
 
 
 def decrypt(ciph):
-    ciph = PuncRem.remove(SpaceRem.remove(ciph)).lower()
+    ciph = Format.remove(ciph, NUMS, PUNC, SPACE).lower()
     if not ciph:
         return ciph, {x: "" for x in ALPH}
 
@@ -39,7 +42,7 @@ def decrypt(ciph):
 def decryptWithSpaces(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
     from Processing import PatternList, PatternGen
 
-    ciph = PuncRem.remove(ciph).lower()
+    ciph = Format.remove(ciph, PUNC).lower()
     if not ciph:
         return ciph, {x: "" for x in ALPH}
     patterns = PatternList.patterns()
@@ -86,7 +89,6 @@ def decryptWithSpaces(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
     # Creates computed result
     keyMap = {key: sorted(val) for key, val in keyMap.items()}
     result = sub(ciph, keyMap)
-    score = DetectEnglish.detect(result)
 
     # Gets length of possibility lists
     keylens = {}
@@ -133,7 +135,7 @@ def decryptWithSpaces(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
         comboGen(toMap, combos, sorted(toMap), 0, vals)
 
         # Returns best solution
-        result, score, keyMap = getBest(combos, ciph, keyMap, sorted(toMap))
+        result, _, keyMap = getBest(combos, ciph, keyMap, sorted(toMap))
 
         i += 1
 

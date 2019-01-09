@@ -1,14 +1,18 @@
 import collections
 import itertools
 import random
+from string import ascii_lowercase as ALPH
+from string import digits as NUMS
+from string import punctuation as PUNC
+from string import whitespace as SPACE
 
 from Ciphers import Caesar, Substitution
-from Formatting import PuncRem, SpaceRem
+from Formatting import Format
 from Processing import DetectEnglish
 
 
 def decrypt(ciph, key="", keylen=0):
-    ciph = PuncRem.remove(SpaceRem.remove(ciph.lower()))
+    ciph = Format.remove(ciph, NUMS, PUNC, SPACE).lower()
 
     if key:
         return decryptWithKey(ciph, key)
@@ -85,7 +89,7 @@ def decryptWithKey(ciph, key):
 def decryptWithSubstitution(ciph):
     seq = "etaoinshrdlcumwfgypbvkjxqz"
 
-    ciph = PuncRem.remove(SpaceRem.remove(ciph))
+    ciph = Format.remove(ciph, NUMS, PUNC, SPACE)
 
     subs = []
     for x in range(0, 7):

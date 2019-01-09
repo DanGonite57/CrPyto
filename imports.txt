@@ -1,0 +1,6 @@
+autopep8
+flake8
+Flask
+matplotlib
+pylint
+python-language-server

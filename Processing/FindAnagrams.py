@@ -1,11 +1,15 @@
-from Formatting import PuncRem, SpaceRem
+from string import digits as NUMS
+from string import punctuation as PUNC
+from string import whitespace as SPACE
+
+from Formatting import Format
 
 with open("./static/WordList.txt", "r") as f:
     wordset = set(f.read().split())
 
 
 def find(word):
-    word = PuncRem.remove(SpaceRem.remove(word))
+    word = Format.remove(word, NUMS, PUNC, SPACE)
 
     anagrams = []
     pattern = sorted(word)
