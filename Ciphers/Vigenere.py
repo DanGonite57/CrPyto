@@ -1,4 +1,5 @@
 import itertools
+from string import digits as NUMS
 from string import punctuation as PUNC
 from string import whitespace as SPACE
 
@@ -8,7 +9,7 @@ from Processing import DetectEnglish
 
 
 def decrypt(ciph, key="", keylen=0):
-    ciph = Format.remove(ciph, PUNC, SPACE).lower()
+    ciph = Format.remove(ciph, NUMS, PUNC, SPACE).lower()
 
     if key:
         return decryptWithKey(ciph, key)

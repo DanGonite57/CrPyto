@@ -1,3 +1,4 @@
+from string import digits as NUMS
 from string import punctuation as PUNC
 from string import whitespace as SPACE
 
@@ -8,7 +9,7 @@ with open("./static/WordList.txt", "r") as f:
 
 
 def find(word):
-    word = Format.remove(word, PUNC, SPACE)
+    word = Format.remove(word, NUMS, PUNC, SPACE)
 
     anagrams = []
     pattern = sorted(word)

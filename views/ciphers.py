@@ -1,3 +1,4 @@
+from string import digits as NUMS
 from string import punctuation as PUNC
 from string import whitespace as SPACE
 
@@ -91,7 +92,7 @@ def subInputs():
         newval = request.json["val"].lower()
         if newval == "":
             newval = "_"
-        ciphText = Format.remove(request.json["ciph"], PUNC, SPACE).lower()
+        ciphText = Format.remove(request.json["ciph"], NUMS, PUNC, SPACE).lower()
         plainText = Format.remove(request.json["plain"], SPACE).lower()
         if plainText == "":
             new = ''.join([newval if x in changed else "_" for x in ciphText])
@@ -119,7 +120,7 @@ def addSpaces():
 @ciphers.route("/splitKey", methods=METHODS)
 def splitKey():
     if request.method == "POST":
-        key = Format.remove(request.json["key"], PUNC, SPACE)
+        key = Format.remove(request.json["key"], NUMS, PUNC, SPACE)
         key = ','.join([x for x in key])
         return json.dumps({"key": key})
     return "error"

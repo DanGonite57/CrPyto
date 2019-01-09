@@ -1,5 +1,6 @@
 import itertools
 import random
+from string import digits as NUMS
 from string import punctuation as PUNC
 from string import whitespace as SPACE
 
@@ -11,7 +12,7 @@ def decrypt(ciph, keylen=0, key=""):
     if not (key or keylen):
         return "", ""
 
-    ciph = Format.remove(ciph, PUNC, SPACE)
+    ciph = Format.remove(ciph, NUMS, PUNC, SPACE)
     text = process(ciph, keylen=keylen, key=key)
 
     if key:
