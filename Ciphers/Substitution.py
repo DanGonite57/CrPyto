@@ -89,7 +89,6 @@ def decryptWithSpaces(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
     # Creates computed result
     keyMap = {key: sorted(val) for key, val in keyMap.items()}
     result = sub(ciph, keyMap)
-    score = DetectEnglish.detect(result)
 
     # Gets length of possibility lists
     keylens = {}
@@ -136,7 +135,7 @@ def decryptWithSpaces(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
         comboGen(toMap, combos, sorted(toMap), 0, vals)
 
         # Returns best solution
-        result, score, keyMap = getBest(combos, ciph, keyMap, sorted(toMap))
+        result, _, keyMap = getBest(combos, ciph, keyMap, sorted(toMap))
 
         i += 1
 
