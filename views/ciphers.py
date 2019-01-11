@@ -78,7 +78,10 @@ def vigenere():
         keylen = request.form["keylenInput"]
         key = request.form["keyInput"]
 
-        result, key, _ = Vigenere.decrypt(ciphText, key=key, keylen=keylen)
+        if request.form.get("oddAlph"):
+            result = Vigenere.decryptWithSubstitution(ciphText)
+        else:
+            result, key, _ = Vigenere.decrypt(ciphText, key=key, keylen=keylen)
         score = DetectEnglish.detectWord(SpaceAdd.add(result)) * 100
 
         args = {"title": "Vigenere", "ciphText": ciphText, "result": result, "score": score, "keylen": keylen, "key": key}
