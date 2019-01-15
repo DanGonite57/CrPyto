@@ -1,6 +1,5 @@
 import io
 from string import ascii_lowercase as ALPH
-from string import digits as NUMS
 from string import punctuation as PUNC
 from string import whitespace as SPACE
 
@@ -83,7 +82,7 @@ def remPunc():
 
 @tools.route("/freqanalysis.png?<ciph>")
 def plotFreq(ciph):
-    ciph = Format.remove(ciph, NUMS, PUNC, SPACE).lower()
+    ciph = Format.keepOnly(ciph.lower(), ALPH)
     fig, ax = plt.subplots(figsize=(10, 5))
     barwidth = 0.3
 

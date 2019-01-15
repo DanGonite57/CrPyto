@@ -10,6 +10,17 @@ def remove(text, *args):
     return text
 
 
+def keepOnly(text, *args):
+    chars = ""
+    for x in args:
+        chars += x
+    new = ""
+    for char in text:
+        if char in chars:
+            new += char
+    return new
+
+
 def readd(new, old):
     new = [x for x in new]
     for i, char in enumerate(old):

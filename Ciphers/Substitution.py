@@ -1,15 +1,13 @@
 import random
 from string import ascii_lowercase as ALPH
-from string import digits as NUMS
 from string import punctuation as PUNC
-from string import whitespace as SPACE
 
 from Formatting import Format
 from Processing import DetectEnglish, FreqAnalysis
 
 
 def decrypt(ciph):
-    ciph = Format.remove(ciph, NUMS, PUNC, SPACE).lower()
+    ciph = Format.keepOnly(ciph.lower(), ALPH)
     if not ciph:
         return ciph, {x: "" for x in ALPH}
 

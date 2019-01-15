@@ -2,9 +2,6 @@ import random
 from collections import Counter
 from itertools import zip_longest
 from string import ascii_lowercase as ALPH
-from string import digits as NUMS
-from string import punctuation as PUNC
-from string import whitespace as SPACE
 
 from Ciphers import Caesar, Substitution
 from Formatting import Format
@@ -12,7 +9,7 @@ from Processing import DetectEnglish
 
 
 def decrypt(ciph, key="", keylen=0):
-    ciph = Format.remove(ciph, NUMS, PUNC, SPACE).lower()
+    ciph = Format.keepOnly(ciph.lower(), ALPH)
 
     if key:
         return decryptWithKey(ciph, key)
@@ -89,11 +86,12 @@ def decryptWithKey(ciph, key):
 def decryptWithSubstitution(ciph):
     seq = "etaoinshrdlcumwfgypbvkjxqz"
 
-    ciph = Format.remove(ciph, NUMS, PUNC, SPACE).lower()
+    ciph = Format.keepOnly(ciph.lower(), ALPH)
+    length = len(ciph)
 
     subs = []
-    for x in range(0, 10):
-        substring = ciph[x::10]
+    for x in range(0, 7):
+        substring = ciph[x::7]
         key = [y[0] for y in Counter(substring).most_common() if y[0] in ALPH]
         for char in seq:
             if char not in key:
@@ -107,21 +105,20 @@ def decryptWithSubstitution(ciph):
         keyMap = dict(zip(sub[1], seq))
         result.append(Substitution.sub(sub[0], keyMap))
     result = ''.join(''.join(b) for b in zip_longest(*result, fillvalue=""))
-    bestScore = DetectEnglish.detect(result)  # * DetectEnglish.detectWord(addSpace(text, result))
+    bestScore = DetectEnglish.detect(result, length=length)
 
     while i < 10000:
         x = random.randint(0, len(subs) - 1)
-        y = random.randint(2, len(subs[x][1]) - 1)
-        z = random.randint(2, len(subs[x][1]) - 1)
+        y = random.randint(1, len(subs[x][1]) - 1)
+        z = random.randint(1, len(subs[x][1]) - 1)
         subs[x][1][y], subs[x][1][z] = subs[x][1][z], subs[x][1][y]
         result = []
         for sub in subs:
             keyMap = dict(zip(sub[1], seq))
             result.append(Substitution.sub(sub[0], keyMap))
         result = ''.join(''.join(b) for b in zip_longest(*result, fillvalue=""))
-        score = DetectEnglish.detect(result)  # * DetectEnglish.detectWord(addSpace(text, result))
+        score = DetectEnglish.detect(result, length=length)
         if score > bestScore:
-            print(i, score)
             bestScore = score
             i = 0
         else:
@@ -134,8 +131,8 @@ def decryptWithSubstitution(ciph):
         key = ""
         for x in ALPH:
             for k, v in keyMap.items():
-                if v == x:
-                    key += k
+                if k == x:
+                    key += v
         result.append(Substitution.sub(sub[0], keyMap))
     result = ''.join(''.join(b) for b in zip_longest(*result, fillvalue=""))
 

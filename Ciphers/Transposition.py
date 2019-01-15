@@ -1,8 +1,6 @@
 import itertools
 import random
-from string import digits as NUMS
-from string import punctuation as PUNC
-from string import whitespace as SPACE
+from string import ascii_lowercase as ALPH
 
 from Formatting import Format
 from Processing import DetectEnglish
@@ -12,7 +10,7 @@ def decrypt(ciph, keylen=0, key=""):
     if not (key or keylen):
         return "", ""
 
-    ciph = Format.remove(ciph, NUMS, PUNC, SPACE)
+    ciph = Format.keepOnly(ciph.lower(), ALPH)
     text = process(ciph, keylen=keylen, key=key)
 
     if key:
