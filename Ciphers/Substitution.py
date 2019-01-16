@@ -11,7 +11,7 @@ def decrypt(ciph):
     if not ciph:
         return ciph, {x: "" for x in ALPH}
 
-    key = [x[0] for x in FreqAnalysis.getFrequencies(ciph) if x[0] in ALPH]
+    key = [x[0] for x in FreqAnalysis.getFrequencies(ciph).most_common() if x[0] in ALPH]
     seq = "etaoinshrdlcumwfgypbvkjxqz"
     keyMap = dict(zip(key, seq))
 
@@ -25,8 +25,8 @@ def decrypt(ciph):
             bestScore = score
             bestKey = list(key)
             i = 0
-        x = random.randint(0, len(key) - 1)
-        y = random.randint(0, len(key) - 1)
+        x = random.randint(1, len(key) - 1)
+        y = random.randint(1, len(key) - 1)
         key = list(bestKey)
         key[x], key[y] = bestKey[y], bestKey[x]
 

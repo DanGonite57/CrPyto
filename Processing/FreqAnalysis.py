@@ -4,4 +4,4 @@ englishProbabilities = {'e': 0.127, 't': 0.0905, 'a': 0.0817, 'o': 0.075, 'i': 0
 
 
 def getFrequencies(text):
-    return dict(collections.Counter(text))
+    return collections.Counter(text)
