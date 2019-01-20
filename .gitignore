@@ -1,6 +1,5 @@
 __pycache__
-test.py
-*.pyc
-/.github
-.env
-.vscode
+/.vscode
+/.venv
+/test.py
+/imports.txt
