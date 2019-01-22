@@ -1,6 +1,7 @@
 import itertools
 import random
 from string import ascii_lowercase as ALPH
+from string import digits as NUMS
 
 from Formatting import Format
 from Processing import DetectEnglish
@@ -10,7 +11,7 @@ def decrypt(ciph, keylen=0, key=""):
     if not (key or keylen):
         return "", ""
 
-    ciph = Format.keepOnly(ciph.lower(), ALPH)
+    ciph = Format.keepOnly(ciph.lower(), ALPH, NUMS)
     text = process(ciph, keylen=keylen, key=key)
 
     if key:

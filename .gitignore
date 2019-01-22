@@ -3,3 +3,5 @@ __pycache__
 /.venv
 /test.py
 /imports.txt
+/requirements-dev.in
+/requirements-dev.txt
