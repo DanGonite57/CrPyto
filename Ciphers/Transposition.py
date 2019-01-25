@@ -3,7 +3,7 @@ import random
 from string import ascii_lowercase as ALPH
 from string import digits as NUMS
 
-from Formatting import Format
+from Formatting import Format, SpaceAdd
 from Processing import DetectEnglish
 
 
@@ -20,7 +20,8 @@ def decrypt(ciph, keylen=0, key=""):
         bestResult, bestKey = decryptShortKey(text)
     else:
         bestResult, bestKey = decryptLongKey(text, keylen)
-    score = DetectEnglish.detect(bestResult)
+
+    bestScore = DetectEnglish.detect(bestResult)
 
     text = process(ciph, keylen=len(ciph) // keylen, key=key)
     text = ''.join(text)
@@ -29,10 +30,23 @@ def decrypt(ciph, keylen=0, key=""):
         result, key = decryptShortKey(text)
     else:
         result, key = decryptLongKey(text, keylen)
-    newscore = DetectEnglish.detect(result)
-    if newscore > score:
+    score = DetectEnglish.detect(result)
+    if score > bestScore:
         bestResult = result
         bestKey = key
+
+    bestScore = 0
+    overflow = len(ciph) % keylen
+    lastset = bestResult[-overflow:]
+    overflow = len(lastset)
+    for perm in itertools.permutations(lastset, overflow):
+        result = bestResult[:-overflow] + ''.join(perm)
+        temp = SpaceAdd.add(result)
+        score = DetectEnglish.detectWord(temp)
+        if score > bestScore:
+            bestScore = score
+            bestResult = result
+
     return bestResult, bestKey
 
 
