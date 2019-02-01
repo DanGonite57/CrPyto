@@ -13,7 +13,7 @@ def add(text):
 
     result = []
     # maxLen = DetectEnglish.getLongest()
-    maxLen = 45
+    maxLen = 24
 
     x = maxLen
     while True:

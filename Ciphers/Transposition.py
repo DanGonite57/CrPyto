@@ -35,17 +35,18 @@ def decrypt(ciph, keylen=0, key=""):
         bestResult = result
         bestKey = key
 
-    bestScore = 0
     overflow = len(ciph) % keylen
-    lastset = bestResult[-overflow:]
-    overflow = len(lastset)
-    for perm in itertools.permutations(lastset, overflow):
-        result = bestResult[:-overflow] + ''.join(perm)
-        temp = SpaceAdd.add(result)
-        score = DetectEnglish.detectWord(temp)
-        if score > bestScore:
-            bestScore = score
-            bestResult = result
+    if overflow != 0:
+        bestScore = 0
+        lastset = bestResult[-overflow:]
+        overflow = len(lastset)
+        for perm in itertools.permutations(lastset, overflow):
+            result = bestResult[:-overflow] + ''.join(perm)
+            temp = SpaceAdd.add(result)
+            score = DetectEnglish.detectWord(temp)
+            if score > bestScore:
+                bestScore = score
+                bestResult = result
 
     return bestResult, bestKey
 
