@@ -2,5 +2,3 @@ __pycache__
 /.vscode
 /.venv
 /test.py
-/requirements-dev.in
-/requirements-dev.txt
