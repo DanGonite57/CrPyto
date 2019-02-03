@@ -1,7 +1,8 @@
 from string import ascii_lowercase as ALPH
+
 from Formatting import Format
 
-with open("./static/WordList.txt", "r") as f:
+with open("./static/txt/WordList.txt", "r") as f:
     wordset = set(f.read().split())
 
 

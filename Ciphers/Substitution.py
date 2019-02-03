@@ -38,7 +38,8 @@ def decrypt(ciph):
 
 
 def decryptWithSpaces(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
-    from Processing import PatternList, PatternGen
+    from Processing import PatternGen
+    from static.py import PatternList
 
     ciph = Format.remove(ciph, PUNC).lower()
     if not ciph:
