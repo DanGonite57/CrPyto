@@ -4,7 +4,7 @@ from Formatting import Format
 
 # from Processing import DetectEnglish
 
-with open("./static/WordList.txt", "r") as f:
+with open("./static/txt/WordList.txt", "r") as f:
     wordset = set(f.read().split())
 
 
