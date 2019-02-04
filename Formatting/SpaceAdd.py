@@ -1,11 +1,11 @@
 from string import whitespace as SPACE
 
 from Formatting import Format
+from static.py import WordList
 
 # from Processing import DetectEnglish
 
-with open("./static/txt/WordList.txt", "r") as f:
-    wordset = set(f.read().split())
+wordset = WordList.words()
 
 
 def add(text):

@@ -2,10 +2,9 @@ import collections
 from string import ascii_lowercase as ALPH
 
 from Formatting import Format
-from static.py import Quadgrams
+from static.py import Quadgrams, WordList
 
-with open("./static/txt/WordList.txt", "r") as f:
-    wordset = set(f.read().split())
+wordset = WordList.words()
 quads = Quadgrams.quads()
 
 
