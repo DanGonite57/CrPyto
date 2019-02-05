@@ -4,7 +4,7 @@
 Ciphers.Caesar
 ~~~~~~~~~~~~~~
 
-This module implements processes to solve Caesar-enciphered text
+This module implements processes to automatically solve Caesar-enciphered text.
 """
 
 from string import ascii_lowercase as ALPH
@@ -13,7 +13,8 @@ from Processing import DetectEnglish
 
 
 def decrypt(ciph):
-    """Try every possible shift and choose the best result"""
+    """Try every possible shift and choose the best result."""
+
     bestScore = 9e99
     bestKey = ""
     bestResult = ""
@@ -29,7 +30,8 @@ def decrypt(ciph):
 
 
 def shift(ciph, key):
-    """Shift the ciphertext by a given number of spaces"""
+    """Shift the ciphertext by a given number of spaces."""
+
     try:
         key = int(key)
     except ValueError:
@@ -41,4 +43,5 @@ def shift(ciph, key):
             result += key[ALPH.index(letter)]
         except ValueError:
             result += letter
+
     return result

@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+
+"""
+Ciphers.Substitution
+~~~~~~~~~~~~~~~~~~~~
+
+This modules implements the processes needed to decipher substitution-enciphered text, both manually and automatically.
+"""
+
 import random
 from string import ascii_lowercase as ALPH
 from string import punctuation as PUNC
@@ -7,6 +16,8 @@ from Processing import DetectEnglish, FreqAnalysis
 
 
 def decrypt(ciph):
+    """Use a hill-climbing algorithm to decipher a substituted alphabet."""
+
     ciph = Format.keepOnly(ciph.lower(), ALPH)
     if not ciph:
         return ciph, {x: "" for x in ALPH}
@@ -38,6 +49,12 @@ def decrypt(ciph):
 
 
 def decryptWithSpaces(ciph, keyMap=""):
+    """
+    Use pattern-matching techniques to decipher a substituted alphabet.
+
+    Requires properly spaced ciphertext to be effective.
+    """
+
     from Processing import PatternGen
     from static.py import PatternList
 
@@ -145,7 +162,13 @@ def decryptWithSpaces(ciph, keyMap=""):
 
 
 def sub(ciph, keyMap):
-    """Use keyMap to perform substitution algorithm on ciph"""
+    """
+    Use mapping of keys to perform substitution algorithm on ciphertext.
+
+    :param ciph: ciphertext to be substituted
+    :param keyMap: dict of keys in form {newVal: oldVal}
+    """
+
     result = []
     append = result.append
     for char in ciph:
@@ -160,11 +183,13 @@ def sub(ciph, keyMap):
         except KeyError:
             append(char)
     result = ''.join(result)
+
     return result
 
 
 def _removeSolved(keyMap, solved, recurse):
     """Remove items in solved from all entries of keyMap"""
+
     for letter in keyMap:
         if len(keyMap[letter]) != 1:
             for char in solved:
@@ -173,22 +198,20 @@ def _removeSolved(keyMap, solved, recurse):
                     recurse = True
                 except ValueError:
                     pass
+
     return recurse
 
 
 def _comboGen(unsolved, combos, keys, i, vals):
     """Create all possible combinations from limited set"""
+
     try:
         for letter in unsolved[keys[i]]:
-            # Adds a possible letter to combo
             vals[keys[i]] = letter
-            # Moves to next key
             _comboGen(unsolved, combos, keys, i + 1, vals)
     except IndexError:
-        # Where the end of the list of keys is reached
         combo = ""
         for char in keys:
-            # Create combo string
             combo += vals[char]
         combos.append(combo)
         return
@@ -196,21 +219,17 @@ def _comboGen(unsolved, combos, keys, i, vals):
 
 def getBest(combos, ciph, keyMap, toMap):
     """Find best mapping in given possibilities"""
+
     bestScore = 0
     bestMap = {}
-
     for combo in combos:
         for i, char in enumerate(combo):
-            # Creates new keyMap
             keyMap[toMap[i]] = char
         result = sub(ciph, keyMap)
-
-        # Compares newScore to prev. best
         score = DetectEnglish.detect(result)
         if score > bestScore:
             bestScore = score
             bestMap = dict(keyMap)
-
     result = sub(ciph, bestMap)
 
     return result, bestScore, bestMap
