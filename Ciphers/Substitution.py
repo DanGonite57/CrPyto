@@ -37,9 +37,12 @@ def decrypt(ciph):
     return result, bestMap
 
 
-def decryptWithSpaces(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
+def decryptWithSpaces(ciph, keyMap=""):
     from Processing import PatternGen
     from static.py import PatternList
+
+    if not keyMap:
+        keyMap = {key: [x for x in ALPH] for key in ALPH}
 
     ciph = Format.remove(ciph, PUNC).lower()
     if not ciph:
@@ -79,7 +82,7 @@ def decryptWithSpaces(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
             recurse = True
 
         # Removes solved letters from other possible mappings
-        recurse = removeSolved(keyMap, solved, recurse)
+        recurse = _removeSolved(keyMap, solved, recurse)
 
     for letter in keyMap:
         if not keyMap[letter]:
@@ -105,7 +108,7 @@ def decryptWithSpaces(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
         solved = [val for key, val in keyMap.items() if len(val) == 1]
 
         # Removes solved mappings
-        recurse = removeSolved(keyMap, solved, recurse)
+        recurse = _removeSolved(keyMap, solved, recurse)
 
         # Update keylens
         keylens = {}
@@ -131,7 +134,7 @@ def decryptWithSpaces(ciph, keyMap={key: [x for x in ALPH] for key in ALPH}):
         # Creates possible combos
         combos = []
         vals = {}
-        comboGen(toMap, combos, sorted(toMap), 0, vals)
+        _comboGen(toMap, combos, sorted(toMap), 0, vals)
 
         # Returns best solution
         result, _, keyMap = getBest(combos, ciph, keyMap, sorted(toMap))
@@ -160,7 +163,7 @@ def sub(ciph, keyMap):
     return result
 
 
-def removeSolved(keyMap, solved, recurse):
+def _removeSolved(keyMap, solved, recurse):
     """Remove items in solved from all entries of keyMap"""
     for letter in keyMap:
         if len(keyMap[letter]) != 1:
@@ -173,14 +176,14 @@ def removeSolved(keyMap, solved, recurse):
     return recurse
 
 
-def comboGen(unsolved, combos, keys, i, vals):
+def _comboGen(unsolved, combos, keys, i, vals):
     """Create all possible combinations from limited set"""
     try:
         for letter in unsolved[keys[i]]:
             # Adds a possible letter to combo
             vals[keys[i]] = letter
             # Moves to next key
-            comboGen(unsolved, combos, keys, i + 1, vals)
+            _comboGen(unsolved, combos, keys, i + 1, vals)
     except IndexError:
         # Where the end of the list of keys is reached
         combo = ""

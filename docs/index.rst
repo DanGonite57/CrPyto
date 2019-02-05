@@ -6,23 +6,28 @@
 Welcome to CrPyto's documentation!
 ==================================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
 
+Introduction
+------------
 
-User Guide
-==========
+Welcome to the CrPyto Documentation page.
+CrPyto is a cryptanalysis interface, written predominately in python.
 
 .. toctree::
     :maxdepth: 2
+    :caption: Contents:
 
-.. automodule:: Ciphers.Caesar
-    :members:
 
+API Reference
+-------------
+
+.. toctree::
+    :maxdepth: 3
+
+    api
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
