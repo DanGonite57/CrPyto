@@ -18,7 +18,7 @@ def decrypt(ciph):
     bestKey = ""
     bestResult = ""
     for i in range(26):
-        result = sub(ciph, i)
+        result = shift(ciph, i)
         score = DetectEnglish.chiSquared(result)
         if score < bestScore:
             bestScore = score
@@ -28,16 +28,17 @@ def decrypt(ciph):
     return bestResult, bestKey
 
 
-def sub(ciph, key):
+def shift(ciph, key):
+    """Shift the ciphertext by a given number of spaces"""
     try:
         key = int(key)
     except ValueError:
         key = ALPH.index(key)
     result = ""
-    shift = ALPH[-key::] + ALPH[:-key]
+    key = ALPH[-key::] + ALPH[:-key]
     for letter in ciph.lower():
         try:
-            result += shift[ALPH.index(letter)]
+            result += key[ALPH.index(letter)]
         except ValueError:
             result += letter
     return result

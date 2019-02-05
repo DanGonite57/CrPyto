@@ -75,7 +75,7 @@ def decryptWithKey(ciph, key):
 
     results = []
     for i, x in enumerate(sub):
-        result = Caesar.sub(x, key[i])
+        result = Caesar.shift(x, key[i])
         results.append(result)
     result = ''.join(map(''.join, zip_longest(*results, fillvalue="")))
     score = DetectEnglish.detect(result)
