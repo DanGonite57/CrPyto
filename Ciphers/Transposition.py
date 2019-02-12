@@ -84,6 +84,7 @@ def _decryptShortKey(text):
 
 def _decryptLongKey(text, keylen):
     """Decrypt long keys (length >= 9) using a hill-climbing algorithm."""
+
     key = list(range(keylen))
     random.shuffle(key)
 
@@ -109,7 +110,7 @@ def _decryptLongKey(text, keylen):
 
 
 def _decryptWithKey(text, key):
-    """Decrypt Transposition cipher where key is provided"""
+    # Decrypt Transposition cipher where key is provided
 
     # Translate key to nums
     try:
@@ -124,7 +125,7 @@ def _decryptWithKey(text, key):
 
 
 def _process(ciph, **kwargs):
-    """Split ciphertext into transposition columns."""
+    # Split ciphertext into transposition columns.
 
     key = kwargs["key"]
     keylen = kwargs["keylen"]
@@ -147,12 +148,12 @@ def _process(ciph, **kwargs):
 
 
 def shuffle(columns, key):
-    "Rearrange columns into the key pattern."
+    """Rearrange columns into the key pattern."""
 
     return [columns[key[x]] for x in range(len(columns))]
 
 
 def recreate(columns):
-    "Convert columnar format to text block."
+    """Convert columnar format to text block."""
 
     return ''.join(map(''.join, itertools.zip_longest(*columns, fillvalue="")))

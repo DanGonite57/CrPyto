@@ -99,7 +99,7 @@ def decryptWithKey(ciph, key):
 
 
 def decryptWithSubstitution(ciph):
-    """Decrypt a general polyalphabetic substitution cipher using mulitple simultaneous hill-climbing algorithms"""
+    """Decrypt a general polyalphabetic substitution cipher using mulitple simultaneous hill-climbing algorithms."""
 
     seq = "etaoinshrdlcumwfgypbvkjxqz"
 

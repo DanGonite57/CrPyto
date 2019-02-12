@@ -188,7 +188,7 @@ def sub(ciph, keyMap):
 
 
 def _removeSolved(keyMap, solved, recurse):
-    """Remove items in solved from all entries of keyMap"""
+    # Remove items in solved from all entries of keyMap
 
     for letter in keyMap:
         if len(keyMap[letter]) != 1:
@@ -203,7 +203,7 @@ def _removeSolved(keyMap, solved, recurse):
 
 
 def _comboGen(unsolved, combos, keys, i, vals):
-    """Create all possible combinations from limited set"""
+    # Create all possible combinations from limited set
 
     try:
         for letter in unsolved[keys[i]]:
@@ -218,7 +218,7 @@ def _comboGen(unsolved, combos, keys, i, vals):
 
 
 def getBest(combos, ciph, keyMap, toMap):
-    """Find best mapping in given possibilities"""
+    """Find best mapping in given possibilities."""
 
     bestScore = 0
     bestMap = {}
