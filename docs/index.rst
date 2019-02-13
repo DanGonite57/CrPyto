@@ -14,17 +14,18 @@ Welcome to the CrPyto Documentation page.
 CrPyto is a cryptanalysis interface, written predominately in python.
 
 .. toctree::
-    :maxdepth: 2
-    :caption: Contents:
+   :maxdepth: 2
+   :caption: Contents:
 
 
 API Reference
 -------------
 
 .. toctree::
-    :maxdepth: 3
+   :maxdepth: 3
 
-    api
+   api
+
 
 Indices and tables
 ------------------

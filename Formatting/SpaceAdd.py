@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+
+"""
+Formatting.SpaceAdd
+~~~~~~~~~~~~~~~~~~~
+
+This module automatically inserts the optimal spacing in a block of text.
+"""
+
 from string import whitespace as SPACE
 
 from Formatting import Format
@@ -9,6 +18,8 @@ wordset = WordList.words()
 
 
 def add(text):
+    """Insert spacing into text."""
+
     string = Format.remove(text, SPACE)
 
     result = []
