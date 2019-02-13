@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+
+"""
+Processing.DetectEnglish
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+This module implements various processes for the qualification and quantification of text.
+"""
+
 import collections
 from string import ascii_lowercase as ALPH
 
@@ -9,6 +18,8 @@ quads = Quadgrams.quads()
 
 
 def detect(text, length=0):
+    """Use english quadgram statistics to determine how likely a piece of text is to be English."""
+
     score = 0
     length = length or len(text)
     for i in range(length):
@@ -16,10 +27,13 @@ def detect(text, length=0):
             score += quads[text[i: i + 4]]
         except KeyError:
             pass
+
     return score / (length + 1)
 
 
 def detectWord(text):
+    """Use WordList to detect the proportion of the text that is likely to be English."""
+
     text = text.lower().split(" ")
     total = 0
     for word in text:
@@ -29,14 +43,9 @@ def detectWord(text):
     return score
 
 
-def freqMatch(text):
-    seq = "etaoinshrdlcumwfgypbvkjxqz"
-    check = collections.Counter(text + seq[::-1]).most_common()  # To ensure that all letters are present
-    merge = [x[0] for x in check[:6] if x[0] in seq[:6]] + [x[0] for x in check[-6::] if x[0] in seq[-6::]]
-    return len(merge)
-
-
 def indexOfCoincidence(text):
+    """Calculate the Index of Coincidence of a piece of text."""
+
     if len(text) == 1:
         return 0
     text = Format.keepOnly(text.lower(), ALPH)
@@ -46,6 +55,8 @@ def indexOfCoincidence(text):
 
 
 def chiSquared(text):
+    """Calculate the Chi-Squared statistic of a piece of text."""
+
     if not text:
         return 0
     text = Format.keepOnly(text.lower(), ALPH)
@@ -57,4 +68,6 @@ def chiSquared(text):
 
 
 def getLongest():
+    """Return the longest word in the WordList."""
+
     return max(map(len, wordset))
