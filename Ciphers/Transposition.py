@@ -12,24 +12,24 @@ def decrypt(ciph, keylen=0, key=""):
         return "", ""
 
     ciph = Format.keepOnly(ciph.lower(), ALPH, NUMS)
-    text = process(ciph, keylen=keylen, key=key)
+    text = _process(ciph, keylen=keylen, key=key)
 
     if key:
-        return decryptWithKey(text, key.split(","))
-    if keylen < 8:
-        bestResult, bestKey = decryptShortKey(text)
+        return _decryptWithKey(text, key.split(","))
+    if keylen < 9:
+        bestResult, bestKey = _decryptShortKey(text)
     else:
-        bestResult, bestKey = decryptLongKey(text, keylen)
+        bestResult, bestKey = _decryptLongKey(text, keylen)
 
     bestScore = DetectEnglish.detect(bestResult)
 
-    text = process(ciph, keylen=len(ciph) // keylen, key=key)
+    text = _process(ciph, keylen=len(ciph) // keylen, key=key)
     text = ''.join(text)
-    text = process(text, keylen=keylen, key=key)
-    if keylen < 8:
-        result, key = decryptShortKey(text)
+    text = _process(text, keylen=keylen, key=key)
+    if keylen < 9:
+        result, key = _decryptShortKey(text)
     else:
-        result, key = decryptLongKey(text, keylen)
+        result, key = _decryptLongKey(text, keylen)
     score = DetectEnglish.detect(result)
     if score > bestScore:
         bestResult = result
@@ -51,7 +51,7 @@ def decrypt(ciph, keylen=0, key=""):
     return bestResult, bestKey
 
 
-def decryptShortKey(text):
+def _decryptShortKey(text):
     bestKey = []
     bestScore = 0
     for key in itertools.permutations(range(len(text))):
@@ -60,13 +60,12 @@ def decryptShortKey(text):
         if score > bestScore:
             bestScore = score
             bestKey = list(key)
-
     result = recreate(shuffle(text, bestKey))
 
     return result, list(map(str, bestKey))
 
 
-def decryptLongKey(text, keylen):
+def _decryptLongKey(text, keylen):
     key = list(range(keylen))
     random.shuffle(key)
 
@@ -86,14 +85,12 @@ def decryptLongKey(text, keylen):
         key[x], key[y] = bestKey[y], bestKey[x]
 
         i += 1
-
     result = recreate(shuffle(text, bestKey))
 
     return result, list(map(str, key))
 
 
-def decryptWithKey(text, key):
-
+def _decryptWithKey(text, key):
     # Translate key to nums
     try:
         key = list(map(int, key))
@@ -106,23 +103,14 @@ def decryptWithKey(text, key):
     return result, list(map(str, key))
 
 
-def process(ciph, **kwargs):
+def _process(ciph, **kwargs):
     key = kwargs["key"]
     keylen = kwargs["keylen"]
     if key:
         keylen = len(key.split(","))
-
-    # Splice ciph into keylens
-    rows = [ciph[i: i + keylen] for i in range(0, len(ciph), keylen)]
-
-    # Transpose ciph
-    text = [""] * keylen
+    text = []
     for i in range(keylen):
-        for row in rows:
-            try:
-                text[i] += row[i]
-            except IndexError:
-                break
+        text.append(ciph[i::keylen])
 
     return text
 
