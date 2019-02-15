@@ -8,13 +8,12 @@ This modules implements the processes needed to decipher a vigenere-enciphered c
 """
 
 import random
-from collections import Counter
 from itertools import zip_longest
 from string import ascii_lowercase as ALPH
 
 from Ciphers import Caesar, Substitution, Transposition
 from Formatting import Format
-from Processing import DetectEnglish
+from Processing import DetectEnglish, FreqAnalysis
 
 
 def decrypt(ciph, key="", keylen=0):
@@ -109,7 +108,7 @@ def decryptWithSubstitution(ciph):
     subs = []
     for x in range(0, 7):
         substring = ciph[x::7]
-        key = [y[0] for y in Counter(substring).most_common() if y[0] in ALPH]
+        key = [y[0] for y in FreqAnalysis.getFrequencies(substring).most_common() if y[0] in ALPH]
         for char in seq:
             if char not in key:
                 key.append(char)

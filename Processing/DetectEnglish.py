@@ -7,10 +7,10 @@ Processing.DetectEnglish
 This module implements various processes for the qualification and quantification of text.
 """
 
-import collections
 from string import ascii_lowercase as ALPH
 
 from Formatting import Format
+from Processing import FreqAnalysis
 from static.py import Quadgrams, WordList
 
 wordset = WordList.words()
@@ -49,7 +49,7 @@ def indexOfCoincidence(text):
     if len(text) == 1:
         return 0
     text = Format.keepOnly(text.lower(), ALPH)
-    count = collections.Counter(text).most_common()
+    count = FreqAnalysis.getFrequencies(text).most_common()
     ic = sum([(x[1] * (x[1] - 1)) / (len(text) * (len(text) - 1)) for x in count])
     return ic
 
