@@ -1,14 +1,24 @@
+# -*- coding: utf-8 -*-
+
+"""
+Ciphers.Vigenere
+~~~~~~~~~~~~~~~~
+
+This modules implements the processes needed to decipher a vigenere-enciphered ciphertext.
+"""
+
 import random
-from collections import Counter
 from itertools import zip_longest
 from string import ascii_lowercase as ALPH
 
-from Ciphers import Caesar, Substitution
+from Ciphers import Caesar, Substitution, Transposition
 from Formatting import Format
-from Processing import DetectEnglish
+from Processing import DetectEnglish, FreqAnalysis
 
 
 def decrypt(ciph, key="", keylen=0):
+    """Automatically decrypt a vigenere cipher using the Index of Coincidence to find possible key lengths."""
+
     ciph = Format.keepOnly(ciph.lower(), ALPH)
 
     if key:
@@ -38,7 +48,7 @@ def decrypt(ciph, key="", keylen=0):
             result, shift = Caesar.decrypt(x)
             results.append(result)
             key.append(shift)
-        result = ''.join(map(''.join, zip_longest(*results, fillvalue="")))
+        result = Transposition.recreate(results)
         score = DetectEnglish.detect(result)
         if score > bestScore:
             bestScore = score
@@ -49,6 +59,8 @@ def decrypt(ciph, key="", keylen=0):
 
 
 def decryptWithKeylen(ciph, keylen):
+    """Decrypt each 'column' of ciphertext as separate Caesar ciphers."""
+
     sub = []
     for i in range(keylen):
         sub.append(ciph[i::keylen])
@@ -59,13 +71,15 @@ def decryptWithKeylen(ciph, keylen):
         result, shift = Caesar.decrypt(x)
         results.append(result)
         key.append(shift)
-    result = ''.join(map(''.join, zip_longest(*results, fillvalue="")))
+    result = Transposition.recreate(results)
     score = DetectEnglish.detect(result)
 
     return result, ','.join(key), score
 
 
 def decryptWithKey(ciph, key):
+    """Use given key to decrypt text."""
+
     key = key.split(",")
     keylen = len(key)
 
@@ -75,15 +89,17 @@ def decryptWithKey(ciph, key):
 
     results = []
     for i, x in enumerate(sub):
-        result = Caesar.sub(x, key[i])
+        result = Caesar.shift(x, key[i])
         results.append(result)
-    result = ''.join(map(''.join, zip_longest(*results, fillvalue="")))
+    result = Transposition.recreate(results)
     score = DetectEnglish.detect(result)
 
     return result, ','.join(key), score
 
 
 def decryptWithSubstitution(ciph):
+    """Decrypt a general polyalphabetic substitution cipher using mulitple simultaneous hill-climbing algorithms."""
+
     seq = "etaoinshrdlcumwfgypbvkjxqz"
 
     ciph = Format.keepOnly(ciph.lower(), ALPH)
@@ -92,7 +108,7 @@ def decryptWithSubstitution(ciph):
     subs = []
     for x in range(0, 7):
         substring = ciph[x::7]
-        key = [y[0] for y in Counter(substring).most_common() if y[0] in ALPH]
+        key = [y[0] for y in FreqAnalysis.getFrequencies(substring).most_common() if y[0] in ALPH]
         for char in seq:
             if char not in key:
                 key.append(char)

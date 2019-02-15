@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+
+"""
+Ciphers.Transposition
+~~~~~~~~~~~~~~~~~~~~~
+
+This module implements the processes needed to decipher Transposition ciphers.
+"""
+
 import itertools
 import random
 from string import ascii_lowercase as ALPH
@@ -8,6 +17,12 @@ from Processing import DetectEnglish
 
 
 def decrypt(ciph, keylen=0, key=""):
+    """
+    Attempt decryption of the transposition-enciphered text.
+
+    One of keylen or key is required to function.
+    """
+
     if not (key or keylen):
         return "", ""
 
@@ -52,6 +67,8 @@ def decrypt(ciph, keylen=0, key=""):
 
 
 def _decryptShortKey(text):
+    """Decrypt ciphertext if the key is short (length < 9) using a brute-force attack."""
+
     bestKey = []
     bestScore = 0
     for key in itertools.permutations(range(len(text))):
@@ -66,6 +83,8 @@ def _decryptShortKey(text):
 
 
 def _decryptLongKey(text, keylen):
+    """Decrypt long keys (length >= 9) using a hill-climbing algorithm."""
+
     key = list(range(keylen))
     random.shuffle(key)
 
@@ -91,6 +110,8 @@ def _decryptLongKey(text, keylen):
 
 
 def _decryptWithKey(text, key):
+    # Decrypt Transposition cipher where key is provided
+
     # Translate key to nums
     try:
         key = list(map(int, key))
@@ -104,6 +125,8 @@ def _decryptWithKey(text, key):
 
 
 def _process(ciph, **kwargs):
+    # Split ciphertext into transposition columns.
+
     key = kwargs["key"]
     keylen = kwargs["keylen"]
     if key:
@@ -116,8 +139,12 @@ def _process(ciph, **kwargs):
 
 
 def shuffle(columns, key):
+    """Rearrange columns into the key pattern."""
+
     return [columns[key[x]] for x in range(len(columns))]
 
 
 def recreate(columns):
+    """Convert columnar format to text block."""
+
     return ''.join(map(''.join, itertools.zip_longest(*columns, fillvalue="")))

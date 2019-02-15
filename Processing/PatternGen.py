@@ -1,4 +1,16 @@
+# -*- coding: utf-8 -*-
+
+"""
+Processing.PatternGen
+~~~~~~~~~~~~~~~~~~~~~
+
+This module implements processes generate patterns from words.
+"""
+
+
 def pattern(word):
+    """Generate a pattern from a word."""
+
     contains = []
     result = []
     for letter in word:
