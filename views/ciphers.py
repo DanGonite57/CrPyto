@@ -25,7 +25,7 @@ def caesar():
 
         ciphText = request.form["ciphInput"].lower()
         result, _ = Caesar.decrypt(ciphText)
-        score = DetectEnglish.detect(SpaceAdd.add(result)) * 100
+        score = DetectEnglish.detectWord(SpaceAdd.add(result)) * 100
 
         args = {"title": "Caesar", "ciphText": ciphText, "result": result, "score": score}
     return render_template(f"ciphers/caesar.html", **args)
@@ -61,8 +61,7 @@ def transposition():
 
         result, key = Transposition.decrypt(ciphText, key=key, keylen=keylen)
         key = ','.join(key)
-        spacedResult = SpaceAdd.add(result)
-        score = DetectEnglish.detectWord(spacedResult) * 100
+        score = DetectEnglish.detectWord(SpaceAdd.add(result)) * 100
 
         args = {"title": "Transposition", "ciphText": ciphText, "result": result, "score": score, "keylen": keylen, "key": key}
     return render_template(f"ciphers/transposition.html", **args)
