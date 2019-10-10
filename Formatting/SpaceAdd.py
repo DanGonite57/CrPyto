@@ -7,40 +7,12 @@ Formatting.SpaceAdd
 This module automatically inserts the optimal spacing in a block of text.
 """
 
-from string import whitespace as SPACE
+from wordsegment import load, segment
 
-from Formatting import Format
-from static.py import WordList
-
-# from Processing import DetectEnglish
-
-wordset = WordList.words()
+load()
 
 
 def add(text):
     """Insert spacing into text."""
 
-    string = Format.remove(text, SPACE)
-
-    result = []
-    # maxLen = DetectEnglish.getLongest()
-    maxLen = 24
-
-    x = maxLen
-    while True:
-        word = string[:x]
-        if word in wordset:
-            result.append(word)
-            string = string[x::]
-            x = maxLen
-        else:
-            x -= 1
-
-        if x == 0 and string:
-            result.append(string[0])
-            string = string[1::]
-            x = maxLen
-        elif not string:
-            break
-
-    return ' '.join(result)
+    return ' '.join(segment(text))

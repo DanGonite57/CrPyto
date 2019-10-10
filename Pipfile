@@ -9,10 +9,12 @@ autopep8 = "*"
 flake8 = "*"
 sphinx = "*"
 sphinx-rtd-theme = "*"
+mypy = "*"
 
 [packages]
 flask = "*"
 matplotlib = "*"
+wordsegment = "*"
 
 [requires]
 python_version = "3.7"
