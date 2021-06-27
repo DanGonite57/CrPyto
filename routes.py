@@ -5,17 +5,16 @@ from flask import redirect, render_template, send_from_directory, url_for
 from app import app
 
 
-@app.route('/favicon.ico')
+@app.route("/favicon.ico")
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'img/favicon.ico')
+    return send_from_directory(os.path.join(app.root_path, "static"), "img/favicon.ico")
 
 
-@app.route('/')
+@app.route("/")
 def root():
     return redirect(url_for("index"))
 
 
 @app.route("/index.html")
 def index():
-    return render_template('index.html', title="CrPyto")
+    return render_template("index.html", title="CrPyto")

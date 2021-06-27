@@ -36,16 +36,16 @@ def decrypt(ciph, keylen=0, key=""):
     else:
         bestResult, bestKey = _decryptLongKey(text, keylen)
 
-    bestScore = DetectEnglish.detect(bestResult)
+    bestScore = DetectEnglish.detectWord(SpaceAdd.addLongest(bestResult))
 
     text = _process(ciph, keylen=len(ciph) // keylen, key=key)
-    text = ''.join(text)
+    text = "".join(text)
     text = _process(text, keylen=keylen, key=key)
     if keylen < 9:
         result, key = _decryptShortKey(text)
     else:
         result, key = _decryptLongKey(text, keylen)
-    score = DetectEnglish.detect(result)
+    score = DetectEnglish.detectWord(SpaceAdd.addLongest(result))
     if score > bestScore:
         bestResult = result
         bestKey = key
@@ -56,14 +56,13 @@ def decrypt(ciph, keylen=0, key=""):
         lastset = bestResult[-overflow:]
         overflow = len(lastset)
         for perm in itertools.permutations(lastset, overflow):
-            result = bestResult[:-overflow] + ''.join(perm)
-            temp = SpaceAdd.add(result)
-            score = DetectEnglish.detectWord(temp)
+            result = bestResult[:-overflow] + "".join(perm)
+            score = DetectEnglish.detectWord(SpaceAdd.addLongest(result))
             if score > bestScore:
                 bestScore = score
                 bestResult = result
 
-    return bestResult, bestKey
+    return bestResult, bestKey, bestScore
 
 
 def _decryptShortKey(text):
@@ -92,6 +91,8 @@ def _decryptLongKey(text, keylen):
     bestScore = 0
     i = 0
     while i < 10000:
+        if random.uniform(0, 10) < 1:
+            random.shuffle(key)
         result = recreate(shuffle(text, key))
         score = DetectEnglish.detect(result)
         if score > bestScore:
@@ -147,4 +148,4 @@ def shuffle(columns, key):
 def recreate(columns):
     """Convert columnar format to text block."""
 
-    return ''.join(map(''.join, itertools.zip_longest(*columns, fillvalue="")))
+    return "".join(map("".join, itertools.zip_longest(*columns, fillvalue="")))

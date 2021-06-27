@@ -10,13 +10,13 @@ This module implements a function that finds anagrams of a given string.
 from string import ascii_lowercase as ALPH
 
 from Formatting import Format
-from static.py import WordList
-
-wordset = WordList.words()
 
 
 def find(word):
     """Find anagrams of a given word."""
+
+    with open("static/txt/wordlist.txt", encoding="utf-8") as f:
+        wordset = f.read().split("\n")
 
     word = Format.keepOnly(word.lower(), ALPH)
 

@@ -25,7 +25,7 @@ def caesar():
 
         ciphText = request.form["ciphInput"].lower()
         result, _ = Caesar.decrypt(ciphText)
-        score = DetectEnglish.detectWord(SpaceAdd.add(result)) * 100
+        score = DetectEnglish.detectWord(SpaceAdd.addLongest(result)) * 100
 
         args = {"title": "Caesar", "ciphText": ciphText, "result": result, "score": score}
     return render_template(f"ciphers/caesar.html", **args)
@@ -43,7 +43,7 @@ def substitution():
             result, vals = Substitution.decryptWithSpaces(ciphText)
         else:
             result, vals = Substitution.decrypt(ciphText)
-        score = DetectEnglish.detectWord(SpaceAdd.add(result)) * 100
+        score = DetectEnglish.detectWord(SpaceAdd.addLongest(result)) * 100
 
         args = {"title": "Substitution", "ciphText": ciphText, "result": result, "score": score, "vals": vals}
     return render_template(f"ciphers/substitution.html", **args)
@@ -60,8 +60,8 @@ def transposition():
         key = request.form["keyInput"]
 
         result, key = Transposition.decrypt(ciphText, key=key, keylen=keylen)
-        key = ','.join(key)
-        score = DetectEnglish.detectWord(SpaceAdd.add(result)) * 100
+        key = ",".join(key)
+        score = DetectEnglish.detectWord(SpaceAdd.addLongest(result)) * 100
 
         args = {"title": "Transposition", "ciphText": ciphText, "result": result, "score": score, "keylen": keylen, "key": key}
     return render_template(f"ciphers/transposition.html", **args)
@@ -81,7 +81,7 @@ def vigenere():
             result = Vigenere.decryptWithSubstitution(ciphText)
         else:
             result, key, _ = Vigenere.decrypt(ciphText, key=key, keylen=keylen)
-        score = DetectEnglish.detectWord(SpaceAdd.add(result)) * 100
+        score = DetectEnglish.detectWord(SpaceAdd.addLongest(result)) * 100
 
         args = {"title": "Vigenere", "ciphText": ciphText, "result": result, "score": score, "keylen": keylen, "key": key}
     return render_template(f"ciphers/vigenere.html", **args)
@@ -113,7 +113,7 @@ def subInputs():
 def addSpaces():
     if request.method == "POST":
         plainText = Format.remove(request.json["plain"], SPACE)
-        plainText = SpaceAdd.add(plainText)
+        plainText = SpaceAdd.addLongest(plainText)
         score = DetectEnglish.detectWord(plainText) * 100
         return json.dumps({"plain": plainText, "score": f"{score}% certainty"})
     return "error"
@@ -123,6 +123,6 @@ def addSpaces():
 def splitKey():
     if request.method == "POST":
         key = Format.keepOnly(request.json["key"].lower(), ALPH)
-        key = ','.join([x for x in key])
+        key = ",".join([x for x in key])
         return json.dumps({"key": key})
     return "error"

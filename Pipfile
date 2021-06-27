@@ -4,17 +4,13 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pylint = "*"
-autopep8 = "*"
 flake8 = "*"
 sphinx = "*"
 sphinx-rtd-theme = "*"
 mypy = "*"
+black = "*"
 
 [packages]
 flask = "*"
 matplotlib = "*"
 wordsegment = "*"
-
-[requires]
-python_version = "3.7"

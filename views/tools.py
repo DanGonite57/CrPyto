@@ -29,7 +29,7 @@ def freqAnalysis():
     args = {"title": "Frequency Analysis", "ciphText": "", "score": 0}
     if request.method == "POST":
         args["ciphText"] = ciph = request.form["ciphInput"]
-        args["score"] = DetectEnglish.detectWord(SpaceAdd.add(ciph)) * 100
+        args["score"] = DetectEnglish.detectWord(SpaceAdd.addLongest(ciph)) * 100
     plotFreq(args["ciphText"])
     return render_template(f"tools/freqanalysis.html", **args)
 
@@ -40,7 +40,7 @@ def reverseText():
     if request.method == "POST":
         args["ciphText"] = ciph = request.form["ciphInput"]
         args["result"] = plain = ciph[::-1]
-        args["score"] = DetectEnglish.detectWord(SpaceAdd.add(plain)) * 100
+        args["score"] = DetectEnglish.detectWord(SpaceAdd.addLongest(plain)) * 100
     return render_template(f"tools/reversetext.html", **args)
 
 
@@ -54,7 +54,7 @@ def formatting():
 def addSpaces():
     if request.method == "POST":
         plainText = Format.remove(request.json["plain"], SPACE)
-        plainText = SpaceAdd.add(plainText)
+        plainText = SpaceAdd.addLongest(plainText)
         score = DetectEnglish.detectWord(plainText) * 100
         return json.dumps({"plain": plainText, "score": f"{score}% certainty"})
     return "error"
@@ -64,7 +64,7 @@ def addSpaces():
 def remSpaces():
     if request.method == "POST":
         plainText = Format.remove(request.json["plain"], SPACE)
-        text = SpaceAdd.add(plainText)
+        text = SpaceAdd.addLongest(plainText)
         score = DetectEnglish.detectWord(text) * 100
         return json.dumps({"plain": plainText, "score": f"{score}% certainty"})
     return "error"
@@ -74,7 +74,7 @@ def remSpaces():
 def remPunc():
     if request.method == "POST":
         plainText = Format.remove(request.json["plain"], PUNC)
-        text = SpaceAdd.add(plainText)
+        text = SpaceAdd.addLongest(plainText)
         score = DetectEnglish.detectWord(text) * 100
         return json.dumps({"plain": plainText, "score": f"{score}% certainty"})
     return "error"
@@ -108,4 +108,4 @@ def plotFreq(ciph):
 
     output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
+    return Response(output.getvalue(), mimetype="image/png")

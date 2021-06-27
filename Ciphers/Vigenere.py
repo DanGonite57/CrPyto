@@ -4,16 +4,18 @@
 Ciphers.Vigenere
 ~~~~~~~~~~~~~~~~
 
-This modules implements the processes needed to decipher a vigenere-enciphered ciphertext.
+This module implements the processes needed to decipher a vigenere-enciphered ciphertext.
 """
 
 import random
 from itertools import zip_longest
 from string import ascii_lowercase as ALPH
 
-from Ciphers import Caesar, Substitution, Transposition
 from Formatting import Format
 from Processing import DetectEnglish, FreqAnalysis
+from Processing.FreqAnalysis import englishProbabilities as letterProbs
+
+from Ciphers import Caesar, Substitution, Transposition
 
 
 def decrypt(ciph, key="", keylen=0):
@@ -52,10 +54,10 @@ def decrypt(ciph, key="", keylen=0):
         score = DetectEnglish.detect(result)
         if score > bestScore:
             bestScore = score
-            bestKey = ''.join(key)
+            bestKey = "".join(key)
             bestResult = result
 
-    return bestResult, ','.join(bestKey), bestScore
+    return bestResult, ",".join(bestKey), bestScore
 
 
 def decryptWithKeylen(ciph, keylen):
@@ -74,7 +76,7 @@ def decryptWithKeylen(ciph, keylen):
     result = Transposition.recreate(results)
     score = DetectEnglish.detect(result)
 
-    return result, ','.join(key), score
+    return result, ",".join(key), score
 
 
 def decryptWithKey(ciph, key):
@@ -94,13 +96,11 @@ def decryptWithKey(ciph, key):
     result = Transposition.recreate(results)
     score = DetectEnglish.detect(result)
 
-    return result, ','.join(key), score
+    return result, ",".join(key), score
 
 
 def decryptWithSubstitution(ciph):
     """Decrypt a general polyalphabetic substitution cipher using mulitple simultaneous hill-climbing algorithms."""
-
-    seq = "etaoinshrdlcumwfgypbvkjxqz"
 
     ciph = Format.keepOnly(ciph.lower(), ALPH)
     length = len(ciph)
@@ -109,7 +109,7 @@ def decryptWithSubstitution(ciph):
     for x in range(0, 7):
         substring = ciph[x::7]
         key = [y[0] for y in FreqAnalysis.getFrequencies(substring).most_common() if y[0] in ALPH]
-        for char in seq:
+        for char in letterProbs:
             if char not in key:
                 key.append(char)
         subs.append((substring, key))
@@ -118,9 +118,9 @@ def decryptWithSubstitution(ciph):
     bestScore = 0
     result = []
     for sub in subs:
-        keyMap = dict(zip(sub[1], seq))
+        keyMap = dict(zip(sub[1], letterProbs))
         result.append(Substitution.sub(sub[0], keyMap))
-    result = ''.join(''.join(b) for b in zip_longest(*result, fillvalue=""))
+    result = "".join("".join(b) for b in zip_longest(*result, fillvalue=""))
     bestScore = DetectEnglish.detect(result, length=length)
 
     while i < 10000:
@@ -130,9 +130,9 @@ def decryptWithSubstitution(ciph):
         subs[x][1][y], subs[x][1][z] = subs[x][1][z], subs[x][1][y]
         result = []
         for sub in subs:
-            keyMap = dict(zip(sub[1], seq))
+            keyMap = dict(zip(sub[1], letterProbs))
             result.append(Substitution.sub(sub[0], keyMap))
-        result = ''.join(''.join(b) for b in zip_longest(*result, fillvalue=""))
+        result = "".join("".join(b) for b in zip_longest(*result, fillvalue=""))
         score = DetectEnglish.detect(result, length=length)
         if score > bestScore:
             bestScore = score
@@ -143,13 +143,13 @@ def decryptWithSubstitution(ciph):
 
     result = []
     for sub in subs:
-        keyMap = dict(zip(sub[1], seq))
+        keyMap = dict(zip(sub[1], letterProbs))
         key = ""
         for x in ALPH:
             for k, v in keyMap.items():
                 if k == x:
                     key += v
         result.append(Substitution.sub(sub[0], keyMap))
-    result = ''.join(''.join(b) for b in zip_longest(*result, fillvalue=""))
+    result = "".join("".join(b) for b in zip_longest(*result, fillvalue=""))
 
     return result
