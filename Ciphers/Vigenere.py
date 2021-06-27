@@ -4,7 +4,7 @@
 Ciphers.Vigenere
 ~~~~~~~~~~~~~~~~
 
-This modules implements the processes needed to decipher a vigenere-enciphered ciphertext.
+This module implements the processes needed to decipher a vigenere-enciphered ciphertext.
 """
 
 import random
@@ -52,10 +52,10 @@ def decrypt(ciph, key="", keylen=0):
         score = DetectEnglish.detect(result)
         if score > bestScore:
             bestScore = score
-            bestKey = ''.join(key)
+            bestKey = "".join(key)
             bestResult = result
 
-    return bestResult, ','.join(bestKey), bestScore
+    return bestResult, ",".join(bestKey), bestScore
 
 
 def decryptWithKeylen(ciph, keylen):
@@ -74,7 +74,7 @@ def decryptWithKeylen(ciph, keylen):
     result = Transposition.recreate(results)
     score = DetectEnglish.detect(result)
 
-    return result, ','.join(key), score
+    return result, ",".join(key), score
 
 
 def decryptWithKey(ciph, key):
@@ -94,7 +94,7 @@ def decryptWithKey(ciph, key):
     result = Transposition.recreate(results)
     score = DetectEnglish.detect(result)
 
-    return result, ','.join(key), score
+    return result, ",".join(key), score
 
 
 def decryptWithSubstitution(ciph):
@@ -120,7 +120,7 @@ def decryptWithSubstitution(ciph):
     for sub in subs:
         keyMap = dict(zip(sub[1], seq))
         result.append(Substitution.sub(sub[0], keyMap))
-    result = ''.join(''.join(b) for b in zip_longest(*result, fillvalue=""))
+    result = "".join("".join(b) for b in zip_longest(*result, fillvalue=""))
     bestScore = DetectEnglish.detect(result, length=length)
 
     while i < 10000:
@@ -132,7 +132,7 @@ def decryptWithSubstitution(ciph):
         for sub in subs:
             keyMap = dict(zip(sub[1], seq))
             result.append(Substitution.sub(sub[0], keyMap))
-        result = ''.join(''.join(b) for b in zip_longest(*result, fillvalue=""))
+        result = "".join("".join(b) for b in zip_longest(*result, fillvalue=""))
         score = DetectEnglish.detect(result, length=length)
         if score > bestScore:
             bestScore = score
@@ -150,6 +150,6 @@ def decryptWithSubstitution(ciph):
                 if k == x:
                     key += v
         result.append(Substitution.sub(sub[0], keyMap))
-    result = ''.join(''.join(b) for b in zip_longest(*result, fillvalue=""))
+    result = "".join("".join(b) for b in zip_longest(*result, fillvalue=""))
 
     return result

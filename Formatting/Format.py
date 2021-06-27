@@ -17,7 +17,7 @@ def remove(text, *args):
     :param args: list of characters to be removed
     """
 
-    chars = ''.join(args)
+    chars = "".join(args)
     for char in chars:
         text = text.replace(char, "")
 
@@ -31,7 +31,7 @@ def keepOnly(text, *args):
     :param args: list of characters to be kept
     """
 
-    chars = ''.join(args)
+    chars = "".join(args)
     new = ""
     for char in text:
         if char in chars:
@@ -52,4 +52,4 @@ def readd(new, old):
             except IndexError:
                 new.append(char)
 
-    return ''.join(new)
+    return "".join(new)
