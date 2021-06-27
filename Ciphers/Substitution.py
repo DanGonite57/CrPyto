@@ -7,6 +7,7 @@ Ciphers.Substitution
 This modules implements the processes needed to decipher substitution-enciphered text, both manually and automatically.
 """
 
+import json
 import random
 from string import ascii_lowercase as ALPH
 from string import punctuation as PUNC
@@ -56,7 +57,6 @@ def decryptWithSpaces(ciph, keyMap=""):
     """
 
     from Processing import PatternGen
-    from static.py import PatternList
 
     if not keyMap:
         keyMap = {key: [x for x in ALPH] for key in ALPH}
@@ -64,7 +64,9 @@ def decryptWithSpaces(ciph, keyMap=""):
     ciph = Format.remove(ciph, PUNC).lower()
     if not ciph:
         return ciph, {x: "" for x in ALPH}
-    patterns = PatternList.patterns()
+
+    with open("static/txt/patterns.json", encoding="utf-8") as f:
+        patterns = json.load(f)
 
     # Reformats text into list
     for cw in ciph.split(" "):

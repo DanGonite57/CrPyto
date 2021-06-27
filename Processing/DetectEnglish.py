@@ -7,16 +7,18 @@ Processing.DetectEnglish
 This module implements various processes for the qualification and quantification of text.
 """
 
+import json
 from string import ascii_lowercase as ALPH
 
 from Formatting import Format
-from static.py import Quadgrams, WordList
 
 from Processing import FreqAnalysis
 from Processing.FreqAnalysis import englishProbabilities as letterProbs
 
-wordset = WordList.words()
-quads = Quadgrams.quads()
+with open("static/txt/wordlist.txt", encoding="utf-8") as f:
+    wordset = f.read().split("\n")
+with open("static/txt/quadgrams.json", encoding="utf-8") as f:
+    quads = json.load(f)
 
 
 def detect(text, length=0):
