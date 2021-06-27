@@ -18,7 +18,7 @@ def addForwards(text):
     """Insert spacing into text."""
 
     with open("static/txt/wordlist.txt", encoding="utf-8") as f:
-        wordset = f.read().split("\n")
+        wordset = set(f.read().split("\n"))
 
     string = Format.keepOnly(text, ALPH)
 
@@ -41,5 +41,27 @@ def addForwards(text):
             x = maxLen
         elif not string:
             break
+
+    return " ".join(result)
+
+
+def addLongest(text):
+    """Insert spacing into text. Longest identified words inserted first."""
+
+    with open("static/txt/wordlist.txt", encoding="utf-8") as f:
+        wordset = set(f.read().split("\n"))
+
+    string = Format.keepOnly(text, ALPH)
+
+    result = [""] * len(string)
+    maxLen = DetectEnglish.getLongest()
+
+    for chunkSize in range(maxLen, 0, -1):
+        for i in range(0, len(string) - chunkSize + 1):
+            if string[i : i + chunkSize] in wordset:
+                result[i] = string[i : i + chunkSize]
+                string = string.replace(string[i : i + chunkSize], "." * chunkSize)
+
+    result = filter(lambda x: x != "", result)
 
     return " ".join(result)
