@@ -110,30 +110,24 @@ def decryptWithSpaces(ciph, keyMap=""):
     result = sub(ciph, keyMap)
 
     # Gets length of possibility lists
-    keylens = {}
+    keylens = {length: [] for length in map(len, keyMap.values())}
     for letter in keyMap:
-        try:
             keylens[len(keyMap[letter])].append(letter)
-        except KeyError:
-            keylens[len(keyMap[letter])] = [letter]
 
     i = 0
     while i <= max(keylens.keys()):
         recurse = False
 
         # Updates list of solved
-        solved = [val for key, val in keyMap.items() if len(val) == 1]
+        solved = [val for val in keyMap.values() if len(val) == 1]
 
         # Removes solved mappings
         recurse = _removeSolved(keyMap, solved, recurse)
 
         # Update keylens
-        keylens = {}
+        keylens = {length: [] for length in map(len, keyMap.values())}
         for letter in keyMap:
-            try:
                 keylens[len(keyMap[letter])].append(letter)
-            except KeyError:
-                keylens[len(keyMap[letter])] = [letter]
 
         if recurse:
             i = 0
