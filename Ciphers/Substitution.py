@@ -7,13 +7,14 @@ Ciphers.Substitution
 This modules implements the processes needed to decipher substitution-enciphered text, both manually and automatically.
 """
 
+import itertools
 import json
 import random
 from string import ascii_lowercase as ALPH
 from string import punctuation as PUNC
 
 from Formatting import Format
-from Processing import DetectEnglish, FreqAnalysis
+from Processing import DetectEnglish, FreqAnalysis, PatternGen
 from Processing.FreqAnalysis import englishProbabilities as letterProbs
 
 
@@ -56,10 +57,8 @@ def decryptWithSpaces(ciph, keyMap=""):
     Requires properly spaced ciphertext to be effective.
     """
 
-    from Processing import PatternGen
-
     if not keyMap:
-        keyMap = {key: [x for x in ALPH] for key in ALPH}
+        keyMap = {key: set(ALPH) for key in ALPH}
 
     ciph = Format.remove(ciph, PUNC).lower()
     if not ciph:
@@ -68,93 +67,74 @@ def decryptWithSpaces(ciph, keyMap=""):
     with open("static/txt/patterns.json", encoding="utf-8") as f:
         patterns = json.load(f)
 
-    # Reformats text into list
-    for cw in ciph.split(" "):
+    # Reformat text into set
+    for cw in set(ciph.split(" ")):
 
-        # Initiates newMap
-        newMap = {key: [] for key in ALPH}
+        newMap = {key: set() for key in ALPH}
 
-        # Matches pattern to wordlist
+        # Match pattern to wordlist
         pattern = PatternGen.pattern(cw)
-        try:
+        if pattern in patterns:
             for word in patterns[pattern]:
                 for i, letter in enumerate(cw):
-                    newMap[letter] += word[i]
-        except KeyError:
-            continue
+                    newMap[letter].add(word[i])
 
-        # Removes impossible letters
-        for letter in cw:
-            for char in keyMap[letter]:
-                if char not in newMap[letter]:
-                    keyMap[letter].remove(char)
+            # Remove impossible letters
+            for letter in set(cw):
+                keyMap[letter] = keyMap[letter] & newMap[letter] if keyMap[letter] & newMap[letter] else keyMap[letter]
 
     solved = set()
-    recurse = True
-    while recurse:
-        recurse = False
+    while True:
 
-        # Looks for 1-length (solved) mappings
-        oldlen = len(solved)
-        solved = [val for key, val in keyMap.items() if len(val) == 1]
-        if len(solved) != oldlen:
-            recurse = True
+        # Look for 1-length (solved) mappings
+        oldSolved = set(solved)
+        solved = set(next(iter(val)) for val in keyMap.values() if len(val) == 1)
 
-        # Removes solved letters from other possible mappings
-        recurse = _removeSolved(keyMap, solved, recurse)
+        if oldSolved == solved:
+            break
 
-    for letter in keyMap:
-        if not keyMap[letter]:
-            keyMap[letter] = "_"
+        # Remove solved letters from other possible mappings
+        _removeSolved(keyMap, solved)
 
-    # Creates computed result
-    keyMap = {key: sorted(val) for key, val in keyMap.items()}
-    result = sub(ciph, keyMap)
+    keyMap = {letter: keyMap[letter] or {"_"} for letter in keyMap}
 
-    # Gets length of possibility lists
     keylens = {length: [] for length in map(len, keyMap.values())}
     for letter in keyMap:
-            keylens[len(keyMap[letter])].append(letter)
+        keylens[len(keyMap[letter])].append(letter)
 
-    i = 0
-    while i <= max(keylens.keys()):
-        recurse = False
+    while True:
+        if len(keylens) == 1:
+            break
 
-        # Updates list of solved
-        solved = [val for val in keyMap.values() if len(val) == 1]
+        poss = []
+        for letter in ALPH:
+            if letter in keylens[1] + keylens[list(keylens)[1]]:
+                poss.append(keyMap[letter])
+            else:
+                poss.append({"_"})
+        possKeys = list("".join(x) for x in itertools.product(*poss))
+        _, _, bestMap = getBest(possKeys, ciph)
+        for k, v in bestMap.items():
+            if len(v) == 1 and v != "_":
+                keyMap[k] = {v}
 
-        # Removes solved mappings
-        recurse = _removeSolved(keyMap, solved, recurse)
+        while True:
 
-        # Update keylens
+            # Look for 1-length (solved) mappings
+            oldSolved = set(solved)
+            solved = set(next(iter(val)) for val in keyMap.values() if len(val) == 1)
+
+            if oldSolved == solved:
+                break
+
+            # Remove solved letters from other possible mappings
+            _removeSolved(keyMap, solved)
+
         keylens = {length: [] for length in map(len, keyMap.values())}
         for letter in keyMap:
-                keylens[len(keyMap[letter])].append(letter)
+            keylens[len(keyMap[letter])].append(letter)
 
-        if recurse:
-            i = 0
-            continue
-
-        # Finds next letters to solve
-        toMap = {}
-        try:
-            for letter in keylens[i]:
-                toMap[letter] = list(keyMap[letter])
-        except KeyError:
-            i += 1
-            continue
-
-        # Creates possible combos
-        combos = []
-        vals = {}
-        _comboGen(toMap, combos, sorted(toMap), 0, vals)
-
-        # Returns best solution
-        result, _, keyMap = getBest(combos, ciph, keyMap, sorted(toMap))
-
-        i += 1
-
-    return result, keyMap
+    return sub(ciph, keyMap), keyMap
 
 
 def sub(ciph, keyMap):
@@ -166,66 +146,40 @@ def sub(ciph, keyMap):
     """
 
     result = []
-    append = result.append
     for char in ciph:
         try:
             # Maps known values
             if len(keyMap[char]) == 1:
-                append(keyMap[char][0])
+                result.append(next(iter(keyMap[char])))
             # Replaces unknowns with _
             else:
-                append("_")
+                result.append("_")
         # Handles non-alpha chars (eg whitespace)
         except KeyError:
-            append(char)
-    result = ''.join(result)
+            result.append(char)
+    result = "".join(result)
 
     return result
 
 
-def _removeSolved(keyMap, solved, recurse):
+def _removeSolved(keyMap, solved):
     # Remove items in solved from all entries of keyMap
-
     for letter in keyMap:
         if len(keyMap[letter]) != 1:
-            for char in solved:
-                try:
-                    keyMap[letter].remove(char)
-                    recurse = True
-                except ValueError:
-                    pass
-
-    return recurse
+            keyMap[letter] = keyMap[letter] - solved
 
 
-def _comboGen(unsolved, combos, keys, i, vals):
-    # Create all possible combinations from limited set
-
-    try:
-        for letter in unsolved[keys[i]]:
-            vals[keys[i]] = letter
-            _comboGen(unsolved, combos, keys, i + 1, vals)
-    except IndexError:
-        combo = ""
-        for char in keys:
-            combo += vals[char]
-        combos.append(combo)
-        return
-
-
-def getBest(combos, ciph, keyMap, toMap):
+def getBest(possKeys, ciph):
     """Find best mapping in given possibilities."""
 
-    bestScore = 0
-    bestMap = {}
-    for combo in combos:
-        for i, char in enumerate(combo):
-            keyMap[toMap[i]] = char
+    results = []
+    for key in possKeys:
+        keyMap = dict(zip(ALPH, key))
         result = sub(ciph, keyMap)
-        score = DetectEnglish.detect(result)
-        if score > bestScore:
-            bestScore = score
-            bestMap = dict(keyMap)
+        results.append((key, DetectEnglish.detect(result), -DetectEnglish.chiSquared(result)))
+
+    best = max(results)
+    bestMap = dict(zip(ALPH, best[0]))
     result = sub(ciph, bestMap)
 
-    return result, bestScore, bestMap
+    return result, best[1], bestMap
