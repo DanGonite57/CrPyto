@@ -21,12 +21,26 @@ def pattern(word):
 
 
 def generateKnownPatterns():
+    from nltk.corpus import brown, reuters, words, wordnet
+    from string import ascii_lowercase as ALPH
+
     patterns = {}
 
-    with open("static/txt/wordlist.txt", encoding="utf-8") as f:
-        words = f.read().split("\n")
+    wordlist = sorted(
+        set(
+            [x.lower() for x in brown.words()]
+            + [x.lower() for x in reuters.words()]
+            + [x.lower() for x in words.words()]
+            + [x.lower() for x in wordnet.all_lemma_names()]
+        )
+    )
+    for word in list(wordlist):
+        if any(x not in ALPH for x in word):
+            wordlist.remove(word)
+    with open("static/txt/wordlist.txt", "w", encoding="utf-8") as f:
+        f.write("\n".join(wordlist))
 
-    for word in words:
+    for word in wordlist:
         p = pattern(word)
         if p in patterns:
             patterns[p].append(word)
