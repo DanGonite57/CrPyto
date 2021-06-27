@@ -31,7 +31,7 @@ def decrypt(ciph):
     bestKey = []
     bestScore = 0
     i = 0
-    while i < 10000:
+    while i < 1000:
         result = sub(ciph, keyMap)
         score = DetectEnglish.detect(result)
         if score > bestScore:
