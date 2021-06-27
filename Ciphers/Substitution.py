@@ -13,6 +13,7 @@ from string import punctuation as PUNC
 
 from Formatting import Format
 from Processing import DetectEnglish, FreqAnalysis
+from Processing.FreqAnalysis import englishProbabilities as letterProbs
 
 
 def decrypt(ciph):
@@ -23,8 +24,7 @@ def decrypt(ciph):
         return ciph, {x: "" for x in ALPH}
 
     key = [x[0] for x in FreqAnalysis.getFrequencies(ciph).most_common() if x[0] in ALPH]
-    seq = "etaoinshrdlcumwfgypbvkjxqz"
-    keyMap = dict(zip(key, seq))
+    keyMap = dict(zip(key, letterProbs))
 
     bestKey = []
     bestScore = 0
@@ -41,9 +41,9 @@ def decrypt(ciph):
         key = list(bestKey)
         key[x], key[y] = bestKey[y], bestKey[x]
 
-        keyMap = dict(zip(key, seq))
+        keyMap = dict(zip(key, letterProbs))
         i += 1
-    bestMap = dict(zip(key, seq))
+    bestMap = dict(zip(key, letterProbs))
     result = sub(ciph, bestMap)
     return result, bestMap
 
