@@ -13,12 +13,10 @@ import json
 def pattern(word):
     """Generate a pattern from a word."""
 
-    contains = []
+    indices = sorted(set(word), key=word.index)
     result = []
     for letter in word:
-        if letter not in contains:
-            contains.append(letter)
-        result.append(str(contains.index(letter)))
+        result.append(str(indices.index(letter)))
     return ".".join(result)
 
 
