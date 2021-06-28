@@ -1,20 +1,15 @@
-{% extends "layouts/base.html" %}
-
-{% block head %}
-<link type="text/css" href="{{ url_for('static', filename='css/subinput.css') }}" rel="stylesheet">
-{% endblock %}
-
-{% block body %}
+{% extends "layouts/base.html" %} {% block head %}
+<link type="text/css" href="{{ url_for('static', filename='css/subinput.css') }}" rel="stylesheet" />
+{% endblock %} {% block body %}
 <div class="container-fluid">
   <div class="row">
     <div class="col-3">
       <div class="container-fluid">
         <div class="row">
           <div class="col">
-            {% set ALPH = "abcdefghijklmnopqrstuvwxyz" %}
-            {% for x in ALPH[:13] %}
+            {% set ALPH = "abcdefghijklmnopqrstuvwxyz" %} {% for x in ALPH[:13] %}
             <div class="input-group">
-              <input type="text" class="form-control subinput" name="{{ x }}Sub" maxlength="1" value="{{ vals[x] }}">
+              <input type="text" class="form-control subinput" id="{{ x }}Sub" name="subBox" maxlength="1" value="{{ vals[x] }}" />
               <div class="input-group-append">
                 <span class="input-group-text">{{ x.upper() }}</span>
               </div>
@@ -24,7 +19,7 @@
           <div class="col">
             {% for x in ALPH[13:26] %}
             <div class="input-group">
-              <input type="text" class="form-control subinput" name="{{ x }}Sub" maxlength="1" value="{{ vals[x] }}">
+              <input type="text" class="form-control subinput" id="{{ x }}Sub" name="subBox" maxlength="1" value="{{ vals[x] }}" />
               <div class="input-group-append">
                 <span class="input-group-text">{{ x.upper() }}</span>
               </div>
@@ -34,27 +29,28 @@
         </div>
         <div class="row my-2">
           <div class="checkbox">
-            <label class="mx-2"><input class="mx-2" type="checkbox" name="useSpace" value="useSpace">Use Spaces</label>
+            <label class="mx-2"><input class="mx-2" type="checkbox" name="useSpace" value="useSpace" />Use Spaces</label>
           </div>
         </div>
       </div>
     </div>
 
-    {% block ciphForm %}
-    {{ super() }}
+    {% block ciphForm %} {{ super() }}
     <div class="col-9">
       <div class="form-group">
-        <textarea class="form-control" id="plainInput" name="plainInput" oninput="expandTextarea(this)" placeholder="Plain Text">{{ result }}</textarea>
+        <textarea class="form-control" id="ciphInput" name="ciphInput" oninput="expandTextarea(this)" placeholder="Cipher Text">
+      {{ ciphText }}</textarea
+        >
       </div>
       <div class="form-group">
-        <textarea class="form-control" id="ciphInput" name="ciphInput" oninput="expandTextarea(this)" placeholder="Cipher Text">{{ ciphText }}</textarea>
+        <textarea class="form-control" id="plainInput" name="plainInput" oninput="expandTextarea(this)" placeholder="Plain Text">
+{{ result }}</textarea
+        >
       </div>
     </div>
     {% endblock %}
   </div>
 </div>
-{% endblock %}
-
-{% block footer %}
+{% endblock %} {% block footer %}
 <script src="{{ url_for('static', filename='js/subInput.js') }}"></script>
 {% endblock %}

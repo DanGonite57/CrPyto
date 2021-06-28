@@ -1,35 +1,32 @@
-{% extends "layouts/base.html" %}
-
-{% block ciphForm %}
-{{ super() }}
+{% extends "layouts/base.html" %} {% block ciphForm %} {{ super() }}
 <div class="form-row">
   <div class="col">
     <div class="form-group">
-      <textarea class="form-control" id="plainInput" name="plainInput" oninput="expandTextarea(this)" placeholder="Plain Text">{{ result }}</textarea>
+      <textarea class="form-control" id="ciphInput" name="ciphInput" oninput="expandTextarea(this)" placeholder="Cipher Text">
+  {{ ciphText }}</textarea
+      >
     </div>
-    <div class="checkbox">
-      <label class="mx-2"><input class="mx-2" type="checkbox" name="oddAlph" value="oddAlph">Non-standard alphabet</label>
+    <div class="float-left my-2">
+      <input class="form-control" id="keyInput" name="keyInput" placeholder="Key" value="{{ key }}" />
+    </div>
+    <div class="float-left mx-2 my-2">
+      <input class="form-control" id="keylenInput" name="keylenInput" placeholder="Key Length" value="{{ keylen }}" />
     </div>
   </div>
   <div class="col">
     <div class="form-group">
-      <textarea class="form-control" id="ciphInput" name="ciphInput" oninput="expandTextarea(this)" placeholder="Cipher Text">{{ ciphText }}</textarea>
+      <textarea class="form-control" id="plainInput" name="plainInput" oninput="expandTextarea(this)" placeholder="Plain Text">
+{{ result }}</textarea
+      >
     </div>
-    <div class="float-right my-2">
-      <input class="form-control" id="keylenInput" name="keylenInput" placeholder="Key Length" value={{ keylen }}>
-    </div>
-    <div class="float-right mx-2 my-2">
-      <input class="form-control" id="keyInput" name="keyInput" placeholder="Key" value={{ key }}>
+    <div class="checkbox">
+      <label class="mx-2"><input class="mx-2" type="checkbox" name="oddAlph" value="oddAlph" />Non-standard alphabet</label>
     </div>
   </div>
 </div>
-{% endblock %}
-
-{% block extraBtn %}
+{% endblock %} {% block extraBtn %}
 <button class="btn btn-primary" id="splitBtn" type="button">Split Key</button>
-{% endblock %}
-
-{% block footer %}
+{% endblock %} {% block footer %}
 <script type="text/javascript">
   expandTextarea(document.getElementById("plainInput"));
   expandTextarea(document.getElementById("ciphInput"));
