@@ -1,8 +1,6 @@
 <!-- Not Found -->
 
-{% extends "layouts/error.html" %}
-
-{% block message %}
+{% extends "layouts/error.html" %} {% block message %}
 <p>These are not the words you're looking for.</p>
 <p><a href="{{ url_for('index') }}">Take the path more travelled by.</a></p>
 {% endblock %}

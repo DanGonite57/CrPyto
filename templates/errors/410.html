@@ -1,8 +1,6 @@
 <!-- Gone -->
 
-{% extends "layouts/error.html" %}
-
-{% block message %}
+{% extends "layouts/error.html" %} {% block message %}
 <p>Your nefarious plans for this page have been thwarted.</p>
 <p><a href="{{ url_for('index') }}">Be glad that there are still any pages left...</a></p>
 {% endblock %}

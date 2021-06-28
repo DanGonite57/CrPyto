@@ -1,13 +1,5 @@
-{% extends "layouts/base.html" %}
-
-{% block title %}{{ title }}{% endblock %}
-
-{% block body %}
+{% extends "layouts/base.html" %} {% block title %}{{ title }}{% endblock %} {% block body %}
 <div class="container-fluid mx-2 my-2">
-  <div class="text-center">
-    {{ msg }}
-    {% block message %}
-    {% endblock %}
-  </div>
+  <div class="text-center">{{ msg }} {% block message %} {% endblock %}</div>
 </div>
 {% endblock %}

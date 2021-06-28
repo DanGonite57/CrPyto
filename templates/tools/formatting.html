@@ -1,25 +1,20 @@
-{% extends "layouts/base.html" %}
-
-{% block ciphForm %}
-{{ super() }}
+{% extends "layouts/base.html" %} {% block ciphForm %} {{ super() }}
 <div class="form-row">
   <div class="col">
     <div class="form-group">
-      <textarea class="form-control" id="plainInput" name="plainInput" oninput="expandTextarea(this)" placeholder="Plain Text">{{ result }}</textarea>
+      <textarea class="form-control" id="plainInput" name="plainInput" oninput="expandTextarea(this)" placeholder="Plain Text">
+{{ result }}</textarea
+      >
     </div>
   </div>
 </div>
-{% endblock %}
-
-{% block btns %}
+{% endblock %} {% block btns %}
 <div class="float-right">
   <button class="btn btn-primary" id="addSpaceBtn" type="button">Add Spaces</button>
   <button class="btn btn-primary" id="remSpaceBtn" type="button">Remove Spaces</button>
   <button class="btn btn-primary" id="remPuncBtn" type="button">Remove Punctuation</button>
 </div>
-{% endblock %}
-
-{% block footer %}
+{% endblock %} {% block footer %}
 <script type="text/javascript">
   expandTextarea(document.getElementById("plainInput"));
 </script>

@@ -1,71 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <title>{% block title %}{{ title }}{% endblock %}</title>
 
-<head>
+    <link type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" />
+    <link type="text/css" href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" />
+    <link type="text/css" href="{{ url_for('static', filename='css/footer.css') }}" rel="stylesheet" />
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" />
 
-  <title>{% block title %}{{ title }}{% endblock %}</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <!--script src="{{ url_for('static', filename='js/disableBtn.js') }}"></script-->
+    <script src="{{ url_for('static', filename='js/expandTextarea.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/formatting.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/splitKey.js') }}"></script>
 
-  <link type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
-  <link type="text/css" href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
-  <link type="text/css" href="{{ url_for('static', filename='css/footer.css') }}" rel="stylesheet">
-  <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    {% block head %} {% endblock %}
+  </head>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-  <!--script src="{{ url_for('static', filename='js/disableBtn.js') }}"></script-->
-  <script src="{{ url_for('static', filename='js/expandTextarea.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/formatting.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/splitKey.js') }}"></script>
+  <body>
+    <header>{% with title = title %} {% include "layouts/navbar.html" %} {% endwith %} {% block header %}{% endblock %}</header>
 
-  {% block head %}
-  {% endblock %}
-
-</head>
-
-<body>
-
-  <header>
-    {% with title = title %}
-    {% include "layouts/navbar.html" %}
-    {% endwith %}
-    {% block header %}{% endblock %}
-  </header>
-
-  <form class="my-2 mx-2" method="POST">
-    {% block body %}
-    {% block ciphForm %}
-    {% block crackBtn %}
-    <div class="form-row fixed-bottom my-2 mx-2">
-      <div class="col">
-        <div class="float-left">
-          <label id="scoreLbl">{{ score }}% certainty</label>
-        </div>
-        {% block btns %}
-        <div class="float-right">
-          {% block extraBtn %}
+    <form class="my-2 mx-2" method="POST">
+      {% block body %} {% block ciphForm %} {% block crackBtn %}
+      <div class="form-row fixed-bottom my-2 mx-2">
+        <div class="col">
+          <div class="float-left">
+            <label id="scoreLbl">{{ score }}% certainty</label>
+          </div>
+          {% block btns %}
+          <div class="float-right">
+            {% block extraBtn %} {% endblock %}
+            <button class="btn btn-primary" id="addSpaceBtn" type="button">Add Spaces</button>
+            <button class="btn btn-primary" id="submitBtn" type="submit">Decrypt</button>
+          </div>
           {% endblock %}
-          <button class="btn btn-primary" id="addSpaceBtn" type="button">Add Spaces</button>
-          <button class="btn btn-primary" id="submitBtn" type="submit">Decrypt</button>
         </div>
-        {% endblock %}
       </div>
-    </div>
-    {% endblock %}
-    {% endblock %}
-    {% endblock %}
-  </form>
+      {% endblock %} {% endblock %} {% endblock %}
+    </form>
 
-  <script type="text/javascript">
-    expandTextarea(document.getElementById("ciphInput"));
-    expandTextarea(document.getElementById("plainInput"));
-  </script>
+    <script type="text/javascript">
+      expandTextarea(document.getElementById("ciphInput"));
+      expandTextarea(document.getElementById("plainInput"));
+    </script>
 
-  <footer class="footer">
-    {% block footer %}
-    {% endblock %}
-    {% include "layouts/footer.html" %}
-  </footer>
-
-</body>
-
+    <footer class="footer">{% block footer %} {% endblock %} {% include "layouts/footer.html" %}</footer>
+  </body>
 </html>
