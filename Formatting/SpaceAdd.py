@@ -58,9 +58,9 @@ def addLongest(text):
 
     for chunkSize in range(maxLen, 0, -1):
         for i in range(0, len(string) - chunkSize + 1):
-            if string[i : i + chunkSize] in wordset:
-                result[i] = string[i : i + chunkSize]
-                string = string.replace(string[i : i + chunkSize], "." * chunkSize)
+            if (chunk := string[i : i + chunkSize]) in wordset:
+                result[i] = chunk
+                string = string.replace(chunk, "." * chunkSize, 1)
 
     result = filter(lambda x: x != "", result)
 
