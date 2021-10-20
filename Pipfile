@@ -9,6 +9,7 @@ sphinx = "*"
 sphinx-rtd-theme = "*"
 mypy = "*"
 black = "*"
+typing-extensions = "*"
 
 [packages]
 flask = "*"
