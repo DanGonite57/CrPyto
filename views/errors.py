@@ -8,9 +8,9 @@ def errorHandler(error):
         code = error.code
         name = error.name
     else:
-        msg = ("We encountered an error while trying to fulfill your request")
+        msg = "We encountered an error while trying to fulfill your request"
         code = 500
-        name = 'Internal Server Error'
+        name = "Internal Server Error"
 
     return render_template([f"errors/{code}.html", "errors/500.html"], title=f"{code} - {name}", code=code, msg=msg)
 

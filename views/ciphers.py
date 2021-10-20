@@ -28,7 +28,7 @@ def caesar():
         score = DetectEnglish.detectWord(SpaceAdd.addLongest(result)) * 100
 
         args = {"title": "Caesar", "ciphText": ciphText, "result": result, "score": score}
-    return render_template(f"ciphers/caesar.html", **args)
+    return render_template("ciphers/caesar.html", **args)
 
 
 @ciphers.route("/substitution.html", methods=METHODS)
@@ -46,7 +46,7 @@ def substitution():
         score = DetectEnglish.detectWord(SpaceAdd.addLongest(result)) * 100
 
         args = {"title": "Substitution", "ciphText": ciphText, "result": result, "score": score, "vals": vals}
-    return render_template(f"ciphers/substitution.html", **args)
+    return render_template("ciphers/substitution.html", **args)
 
 
 @ciphers.route("/transposition.html", methods=METHODS)
@@ -59,12 +59,12 @@ def transposition():
         keylen = int(request.form["keylenInput"] or 0)
         key = request.form["keyInput"]
 
-        result, key = Transposition.decrypt(ciphText, key=key, keylen=keylen)
+        result, key, _ = Transposition.decrypt(ciphText, key=key, keylen=keylen)
         key = ",".join(key)
         score = DetectEnglish.detectWord(SpaceAdd.addLongest(result)) * 100
 
         args = {"title": "Transposition", "ciphText": ciphText, "result": result, "score": score, "keylen": keylen, "key": key}
-    return render_template(f"ciphers/transposition.html", **args)
+    return render_template("ciphers/transposition.html", **args)
 
 
 @ciphers.route("/vigenere.html", methods=METHODS)
@@ -84,7 +84,7 @@ def vigenere():
         score = DetectEnglish.detectWord(SpaceAdd.addLongest(result)) * 100
 
         args = {"title": "Vigenere", "ciphText": ciphText, "result": result, "score": score, "keylen": keylen, "key": key}
-    return render_template(f"ciphers/vigenere.html", **args)
+    return render_template("ciphers/vigenere.html", **args)
 
 
 @ciphers.route("/subInputs", methods=METHODS)
@@ -97,14 +97,14 @@ def subInputs():
         ciphText = Format.keepOnly(request.json["ciph"].lower(), ALPH)
         plainText = Format.remove(request.json["plain"], SPACE).lower()
         if plainText == "":
-            new = ''.join([newval if x in changed else "_" for x in ciphText])
+            new = "".join([newval if x in changed else "_" for x in ciphText])
         else:
             plainText = [x for x in plainText]
             for i, letter in enumerate(ciphText):
                 if letter == changed:
                     plainText[i] = newval
             new = "".join(plainText)
-        score = DetectEnglish.detectWord(SpaceAdd.add(new)) * 100
+        score = DetectEnglish.detectWord(SpaceAdd.addLongest(new)) * 100
         return json.dumps({"plain": new, "score": f"{score}% certainty"})
     return "error"
 
