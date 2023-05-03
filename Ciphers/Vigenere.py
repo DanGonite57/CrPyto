@@ -108,7 +108,11 @@ def decryptWithSubstitution(ciph):
     subs = []
     for x in range(0, 7):
         substring = ciph[x::7]
-        key = [y[0] for y in FreqAnalysis.getFrequencies(substring).most_common() if y[0] in ALPH]
+        key = [
+            y[0]
+            for y in FreqAnalysis.getFrequencies(substring).most_common()
+            if y[0] in ALPH
+        ]
         for char in letterProbs:
             if char not in key:
                 key.append(char)

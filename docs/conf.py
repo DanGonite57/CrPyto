@@ -147,7 +147,15 @@ man_pages = [(master_doc, "crpyto", "CrPyto Documentation", [author], 1)]
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, "CrPyto", "CrPyto Documentation", author, "CrPyto", "One line description of project.", "Miscellaneous"),
+    (
+        master_doc,
+        "CrPyto",
+        "CrPyto Documentation",
+        author,
+        "CrPyto",
+        "One line description of project.",
+        "Miscellaneous",
+    ),
 ]
 
 

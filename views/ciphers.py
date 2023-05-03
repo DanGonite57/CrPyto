@@ -27,13 +27,24 @@ def caesar():
         result, _ = Caesar.decrypt(ciphText)
         score = DetectEnglish.detectWord(SpaceAdd.addLongest(result)) * 100
 
-        args = {"title": "Caesar", "ciphText": ciphText, "result": result, "score": score}
+        args = {
+            "title": "Caesar",
+            "ciphText": ciphText,
+            "result": result,
+            "score": score,
+        }
     return render_template(f"ciphers/caesar.html", **args)
 
 
 @ciphers.route("/substitution.html", methods=METHODS)
 def substitution():
-    args = {"title": "Substitution", "ciphText": "", "result": "", "score": 0, "vals": {}}
+    args = {
+        "title": "Substitution",
+        "ciphText": "",
+        "result": "",
+        "score": 0,
+        "vals": {},
+    }
     if request.method == "POST":
         from Ciphers import Substitution
 
@@ -45,13 +56,26 @@ def substitution():
             result, vals = Substitution.decrypt(ciphText)
         score = DetectEnglish.detectWord(SpaceAdd.addLongest(result)) * 100
 
-        args = {"title": "Substitution", "ciphText": ciphText, "result": result, "score": score, "vals": vals}
+        args = {
+            "title": "Substitution",
+            "ciphText": ciphText,
+            "result": result,
+            "score": score,
+            "vals": vals,
+        }
     return render_template(f"ciphers/substitution.html", **args)
 
 
 @ciphers.route("/transposition.html", methods=METHODS)
 def transposition():
-    args = {"title": "Transposition", "ciphText": "", "result": "", "score": 0, "keylen": "", "key": ""}
+    args = {
+        "title": "Transposition",
+        "ciphText": "",
+        "result": "",
+        "score": 0,
+        "keylen": "",
+        "key": "",
+    }
     if request.method == "POST":
         from Ciphers import Transposition
 
@@ -63,13 +87,27 @@ def transposition():
         key = ",".join(key)
         score = DetectEnglish.detectWord(SpaceAdd.addLongest(result)) * 100
 
-        args = {"title": "Transposition", "ciphText": ciphText, "result": result, "score": score, "keylen": keylen, "key": key}
+        args = {
+            "title": "Transposition",
+            "ciphText": ciphText,
+            "result": result,
+            "score": score,
+            "keylen": keylen,
+            "key": key,
+        }
     return render_template(f"ciphers/transposition.html", **args)
 
 
 @ciphers.route("/vigenere.html", methods=METHODS)
 def vigenere():
-    args = {"title": "Vigenere", "ciphText": "", "result": "", "score": 0, "keylen": "", "key": ""}
+    args = {
+        "title": "Vigenere",
+        "ciphText": "",
+        "result": "",
+        "score": 0,
+        "keylen": "",
+        "key": "",
+    }
     if request.method == "POST":
         from Ciphers import Vigenere
 
@@ -83,7 +121,14 @@ def vigenere():
             result, key, _ = Vigenere.decrypt(ciphText, key=key, keylen=keylen)
         score = DetectEnglish.detectWord(SpaceAdd.addLongest(result)) * 100
 
-        args = {"title": "Vigenere", "ciphText": ciphText, "result": result, "score": score, "keylen": keylen, "key": key}
+        args = {
+            "title": "Vigenere",
+            "ciphText": ciphText,
+            "result": result,
+            "score": score,
+            "keylen": keylen,
+            "key": key,
+        }
     return render_template(f"ciphers/vigenere.html", **args)
 
 
@@ -97,7 +142,7 @@ def subInputs():
         ciphText = Format.keepOnly(request.json["ciph"].lower(), ALPH)
         plainText = Format.remove(request.json["plain"], SPACE).lower()
         if plainText == "":
-            new = ''.join([newval if x in changed else "_" for x in ciphText])
+            new = "".join([newval if x in changed else "_" for x in ciphText])
         else:
             plainText = [x for x in plainText]
             for i, letter in enumerate(ciphText):

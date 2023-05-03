@@ -25,7 +25,9 @@ def decrypt(ciph):
     if not ciph:
         return ciph, {x: "" for x in ALPH}
 
-    key = [x[0] for x in FreqAnalysis.getFrequencies(ciph).most_common() if x[0] in ALPH]
+    key = [
+        x[0] for x in FreqAnalysis.getFrequencies(ciph).most_common() if x[0] in ALPH
+    ]
     keyMap = dict(zip(key, letterProbs))
 
     bestKey = []
@@ -69,7 +71,6 @@ def decryptWithSpaces(ciph, keyMap=""):
 
     # Reformat text into set
     for cw in set(ciph.split(" ")):
-
         newMap = {key: set() for key in ALPH}
 
         # Match pattern to wordlist
@@ -81,11 +82,14 @@ def decryptWithSpaces(ciph, keyMap=""):
 
             # Remove impossible letters
             for letter in set(cw):
-                keyMap[letter] = keyMap[letter] & newMap[letter] if keyMap[letter] & newMap[letter] else keyMap[letter]
+                keyMap[letter] = (
+                    keyMap[letter] & newMap[letter]
+                    if keyMap[letter] & newMap[letter]
+                    else keyMap[letter]
+                )
 
     solved = set()
     while True:
-
         # Look for 1-length (solved) mappings
         oldSolved = set(solved)
         solved = set(next(iter(val)) for val in keyMap.values() if len(val) == 1)
@@ -119,7 +123,6 @@ def decryptWithSpaces(ciph, keyMap=""):
                 keyMap[k] = {v}
 
         while True:
-
             # Look for 1-length (solved) mappings
             oldSolved = set(solved)
             solved = set(next(iter(val)) for val in keyMap.values() if len(val) == 1)
@@ -176,7 +179,9 @@ def getBest(possKeys, ciph):
     for key in possKeys:
         keyMap = dict(zip(ALPH, key))
         result = sub(ciph, keyMap)
-        results.append((key, DetectEnglish.detect(result), -DetectEnglish.chiSquared(result)))
+        results.append(
+            (key, DetectEnglish.detect(result), -DetectEnglish.chiSquared(result))
+        )
 
     best = max(results)
     bestMap = dict(zip(ALPH, best[0]))
